@@ -1,5 +1,17 @@
 [
   {
+    "id": "lyrics-fbdd2fa",
+    "name": "OLED Lyrics Build",
+    "file": "bins/lyrics-fbdd2fa.bin",
+    "size": 954192,
+    "commit": "fbdd2fa7c484895a7b516e9b6337793d6a78b7f3",
+    "builtAt": "2026-09-08T16:44:46Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "firmware/firmware.ino",
+    "ota": true
+  },
+  {
     "id": "lyrics-f4ea62d",
     "name": "OLED Lyrics Build",
     "file": "bins/lyrics-f4ea62d.bin",
