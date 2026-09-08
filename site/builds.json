@@ -1,5 +1,17 @@
 [
   {
+    "id": "firmware-1930b6c",
+    "name": "Stress Relief V3",
+    "file": "bins/firmware-1930b6c.bin",
+    "size": 949648,
+    "commit": "1930b6cd1559ba57a4bc0bd16f585dd488db0eec",
+    "builtAt": "2026-09-08T13:48:13Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "firmware/firmware.ino",
+    "ota": true
+  },
+  {
     "id": "firmware-ba619c9",
     "name": "Stress Relief V3",
     "file": "bins/firmware-ba619c9.bin",
