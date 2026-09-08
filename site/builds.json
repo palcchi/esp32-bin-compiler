@@ -1,5 +1,17 @@
 [
   {
+    "id": "lyrics-71b9a4c",
+    "name": "OLED Lyrics Build",
+    "file": "bins/lyrics-71b9a4c.bin",
+    "size": 954192,
+    "commit": "71b9a4cd49c2598a8da60737244eb5a5fb138e16",
+    "builtAt": "2026-09-08T16:16:29Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "firmware/firmware.ino",
+    "ota": true
+  },
+  {
     "id": "firmware-1930b6c",
     "name": "Stress Relief V3",
     "file": "bins/firmware-1930b6c.bin",
