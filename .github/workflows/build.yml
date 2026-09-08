@@ -1,4 +1,4 @@
-name: Build ESP32 BIN + Website
+name: Build ESP32 BIN + Website Data
 
 on:
   push:
@@ -10,8 +10,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: esp32-build
@@ -158,23 +156,6 @@ jobs:
           path: site/bins/*.bin
           if-no-files-found: warn
           retention-days: 30
-
-      - name: Configure GitHub Pages
-        id: pages
-        continue-on-error: true
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Upload website to Pages
-        continue-on-error: true
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
-      - name: Deploy website to Pages
-        continue-on-error: true
-        uses: actions/deploy-pages@v4
 
       - name: Fail workflow if compiler failed
         if: steps.compile.outputs.failed == '1'
