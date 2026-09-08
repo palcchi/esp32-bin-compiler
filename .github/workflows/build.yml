@@ -33,7 +33,6 @@ jobs:
           python3 <<'PY'
           import json, pathlib, math
           from PIL import Image, ImageDraw, ImageFont
-
           cfg=json.loads(pathlib.Path('firmware/lyrics.json').read_text())
           scenes=cfg.get('scenes',[])[:120]
           style=cfg.get('style','brat')
@@ -41,7 +40,6 @@ jobs:
           allowed={'none','slide','slidewords','words','popwords'}
           candidates=['/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf','/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf']
           font_path=next((p for p in candidates if pathlib.Path(p).exists()),candidates[-1])
-
           def fit_layout(text):
             brat=style=='brat'
             if brat: text=text.lower()
@@ -50,8 +48,7 @@ jobs:
             max_lines=5 if style=='tiny' else 4
             max_width=112 if brat else 120
             for fs in range(base,6,-1):
-              font=ImageFont.truetype(font_path,fs)
-              words=text.split(); lines=[]; cur=''
+              font=ImageFont.truetype(font_path,fs); words=text.split(); lines=[]; cur=''
               for word in words:
                 test=(cur+' '+word).strip()
                 if d.textbbox((0,0),test,font=font)[2] <= max_width: cur=test
@@ -62,59 +59,35 @@ jobs:
               if not lines: lines=['']
               lh=max(7,int(fs*(0.9 if brat else 1.05)))
               if len(lines)<=max_lines and len(lines)*lh<=58: break
-            lines=lines[:max_lines]
-            rows=[]
+            lines=lines[:max_lines]; rows=[]
             for line in lines:
-              ws=line.split(); widths=[d.textbbox((0,0),w,font=font)[2] for w in ws]
-              space=max(1,d.textbbox((0,0),' ',font=font)[2])
-              total=sum(widths)+space*max(0,len(ws)-1)
-              rows.append((ws,widths,space,total))
-            widest=max(1,max((r[3] for r in rows),default=1))
-            block_width=min(112,max(54,widest)) if brat else widest
-            items=[]; y=(64-len(rows)*lh)//2
+              ws=line.split(); widths=[d.textbbox((0,0),w,font=font)[2] for w in ws]; space=max(1,d.textbbox((0,0),' ',font=font)[2]); total=sum(widths)+space*max(0,len(ws)-1); rows.append((ws,widths,space,total))
+            widest=max(1,max((r[3] for r in rows),default=1)); block_width=min(112,max(54,widest)) if brat else widest; items=[]; y=(64-len(rows)*lh)//2
             for ws,widths,space,total in rows:
-              if brat and len(ws)>1:
-                gap=(block_width-sum(widths))/(len(ws)-1)
-                x=(128-block_width)/2
-              else:
-                gap=space
-                x=(128-total)/2
-              for word,w in zip(ws,widths):
-                items.append((word,x+w/2,y,w))
-                x+=w+gap
+              if brat and len(ws)>1: gap=(block_width-sum(widths))/(len(ws)-1); x=(128-block_width)/2
+              else: gap=space; x=(128-total)/2
+              for word,w in zip(ws,widths): items.append((word,x+w/2,y,w)); x+=w+gap
               y+=lh
             return font,items,lh
-
           def draw_word(im,font,item,fg,yoff=0,scale=1.0):
             word,cx,y,w=item
             if scale==1.0:
-              d=ImageDraw.Draw(im); box=d.textbbox((0,0),word,font=font); tw=box[2]-box[0]
-              d.text((round(cx-tw/2),round(y+yoff)),word,font=font,fill=fg); return
-            mask=Image.new('L',(128,64),0); md=ImageDraw.Draw(mask); box=md.textbbox((0,0),word,font=font); tw=box[2]-box[0]; th=max(1,box[3]-box[1])
-            md.text((round(cx-tw/2),round(y)),word,font=font,fill=255)
-            crop=mask.crop(mask.getbbox() or (0,0,1,1)); nw=max(1,round(crop.width*scale)); nh=max(1,round(crop.height*scale)); crop=crop.resize((nw,nh),Image.Resampling.NEAREST)
-            px=round(cx-nw/2); py=round(y+(th-nh)/2)
-            fill=Image.new('1',(nw,nh),fg); im.paste(fill,(px,py),crop)
-
+              d=ImageDraw.Draw(im); box=d.textbbox((0,0),word,font=font); tw=box[2]-box[0]; d.text((round(cx-tw/2),round(y+yoff)),word,font=font,fill=fg); return
+            mask=Image.new('L',(128,64),0); md=ImageDraw.Draw(mask); box=md.textbbox((0,0),word,font=font); tw=box[2]-box[0]; th=max(1,box[3]-box[1]); md.text((round(cx-tw/2),round(y)),word,font=font,fill=255)
+            crop=mask.crop(mask.getbbox() or (0,0,1,1)); nw=max(1,round(crop.width*scale)); nh=max(1,round(crop.height*scale)); crop=crop.resize((nw,nh),Image.Resampling.NEAREST); px=round(cx-nw/2); py=round(y+(th-nh)/2); fill=Image.new('1',(nw,nh),fg); im.paste(fill,(px,py),crop)
           def render(scene,mode='none',visible=None,active_progress=1.0,whole_progress=1.0):
-            invert=bool(scene.get('invert',False)); bg=1 if invert else 0; fg=0 if invert else 1
-            im=Image.new('1',(128,64),bg); text=str(scene.get('text',''))
+            invert=bool(scene.get('invert',False)); bg=1 if invert else 0; fg=0 if invert else 1; im=Image.new('1',(128,64),bg); text=str(scene.get('text',''))
             if not text: return im
             if mode in {'words','slidewords','popwords'}:
-              all_words=text.split(); n=len(all_words)
-              visible=n if visible is None else max(0,min(n,visible))
-              count=min(n,visible+(1 if visible<n and active_progress>0 else 0))
-              partial=' '.join(all_words[:count])
+              all_words=text.split(); n=len(all_words); visible=n if visible is None else max(0,min(n,visible)); count=min(n,visible+(1 if visible<n and active_progress>0 else 0)); partial=' '.join(all_words[:count])
               if not partial:return im
               font,items,_=fit_layout(partial)
               for i,item in enumerate(items):
                 is_active=(i==len(items)-1 and visible<n and active_progress>0)
                 if not is_active: draw_word(im,font,item,fg); continue
                 p=max(0,min(1,active_progress))
-                if mode=='slidewords':
-                  q=1-(1-p)**3; draw_word(im,font,item,fg,yoff=round(18*(1-q)))
-                elif mode=='popwords':
-                  c1=1.70158; q=1+(c1+1)*(p-1)**3+c1*(p-1)**2; draw_word(im,font,item,fg,scale=max(.2,.22+.78*q))
+                if mode=='slidewords': q=1-(1-p)**3; draw_word(im,font,item,fg,yoff=round(18*(1-q)))
+                elif mode=='popwords': c1=1.70158; q=1+(c1+1)*(p-1)**3+c1*(p-1)**2; draw_word(im,font,item,fg,scale=max(.2,.22+.78*q))
                 else: draw_word(im,font,item,fg)
               return im
             font,items,_=fit_layout(text)
@@ -124,7 +97,6 @@ jobs:
               return im
             for item in items: draw_word(im,font,item,fg)
             return im
-
           def pack(im):
             px=im.load(); data=[]
             for page in range(8):
@@ -134,14 +106,12 @@ jobs:
                   if px[x,page*8+bit]: b|=1<<bit
                 data.append(b)
             return data
-
           frames=[]; durations=[]
           for s in scenes:
             total=max(50,int(s.get('duration',1500))); mode=s.get('animation','none')
             if mode not in allowed: mode='none'
             text=str(s.get('text','')).strip(); words=text.split()
-            if not text or mode=='none':
-              frames.append(pack(render(s))); durations.append(total); continue
+            if not text or mode=='none': frames.append(pack(render(s))); durations.append(total); continue
             if mode=='slide':
               entrance=min(360,max(160,int(total*.35))); steps=4; each=max(35,entrance//steps)
               for p in (.18,.42,.72,1.0): frames.append(pack(render(s,'slide',whole_progress=p))); durations.append(each)
@@ -152,11 +122,8 @@ jobs:
               for i in range(n): frames.append(pack(render(s,'words',visible=i,active_progress=1))); durations.append(step)
               frames.append(pack(render(s))); durations.append(max(50,total-step*n)); continue
             step=max(35,min(150,int(total*.72/max(1,n*2))))
-            for i in range(n):
-              frames.append(pack(render(s,mode,visible=i,active_progress=.42))); durations.append(step)
-              frames.append(pack(render(s,mode,visible=i,active_progress=1.0))); durations.append(step)
+            for i in range(n): frames.append(pack(render(s,mode,visible=i,active_progress=.42))); durations.append(step); frames.append(pack(render(s,mode,visible=i,active_progress=1.0))); durations.append(step)
             frames.append(pack(render(s))); durations.append(max(50,total-step*n*2))
-
           if not frames: frames=[[0]*1024]; durations=[1000]
           if len(frames)>240: raise SystemExit(f'Too many generated frames: {len(frames)} > 240')
           out=['#pragma once','#include <Arduino.h>',f'#define LYRIC_FRAME_COUNT {len(frames)}']
@@ -164,9 +131,7 @@ jobs:
             out.append(f'const uint8_t lyric_frame_{i}[1024] PROGMEM = {{')
             for j in range(0,1024,32): out.append(','.join(f'0x{x:02x}' for x in data[j:j+32])+',')
             out.append('};')
-          out.append('const uint8_t* const lyric_frames[] = {'+','.join(f'lyric_frame_{i}' for i in range(len(frames)))+'};')
-          out.append('const uint32_t lyric_durations[] = {'+','.join(map(str,durations))+'};')
-          pathlib.Path('firmware/LyricsFrames.h').write_text('\n'.join(out)+'\n')
+          out.append('const uint8_t* const lyric_frames[] = {'+','.join(f'lyric_frame_{i}' for i in range(len(frames)))+'};'); out.append('const uint32_t lyric_durations[] = {'+','.join(map(str,durations))+'};'); pathlib.Path('firmware/LyricsFrames.h').write_text('\n'.join(out)+'\n')
           print(f'Rendered {len(frames)} OLED frames with justified BRAT blocks')
           PY
 
@@ -198,7 +163,7 @@ jobs:
           BUILD_ID="lyrics-${SHORT_SHA}"
           BIN_NAME="${BUILD_ID}.bin"
           BUILT_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          DISPLAY_NAME='OLED Lyrics Build'
+          DISPLAY_NAME="$(python3 -c "import json; print(json.load(open('firmware/lyrics.json')).get('name','OLED Lyrics Build'))")"
           SKETCH_DIR='.build/firmware'
           OUT_DIR="${SKETCH_DIR}/out"
           rm -rf "$SKETCH_DIR" && mkdir -p "$OUT_DIR"
