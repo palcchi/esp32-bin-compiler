@@ -1,4 +1,4 @@
-name: Build ESP32 OTA BIN
+name: Build ESP32 BIN + Website
 
 on:
   push:
@@ -8,37 +8,174 @@ on:
       - '.github/workflows/build.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: esp32-build
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache Arduino core
+        uses: actions/cache@v4
+        with:
+          path: ~/.arduino15
+          key: arduino-esp32-3.3.11
 
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v2
 
       - name: Install ESP32 core
+        shell: bash
         run: |
-          arduino-cli config init
+          arduino-cli config init || true
           arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
-          arduino-cli core install esp32:esp32@3.3.11 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core list | grep -q 'esp32:esp32.*3.3.11' || \
+            arduino-cli core install esp32:esp32@3.3.11 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
 
-      - name: Compile OTA application
+      - name: Compile firmware and update manifest
+        id: compile
+        shell: bash
         run: |
-          mkdir -p build
-          arduino-cli compile \
-            --fqbn esp32:esp32:esp32 \
-            --output-dir build \
-            firmware
-          APP_BIN=$(find build -maxdepth 1 -type f -name '*.ino.bin' | head -n 1)
-          test -n "$APP_BIN"
-          cp "$APP_BIN" build/VALLIAN_ESP32_OTA.bin
+          set -u
+          mkdir -p site/bins .build
+          FAILED=0
+          FOUND=0
 
-      - name: Upload OTA firmware
+          while IFS= read -r SRC; do
+            FOUND=1
+            BASE="$(basename "$SRC" .ino)"
+            SAFE="$(printf '%s' "$BASE" | tr '[:upper:] ' '[:lower:]-' | tr -cd 'a-z0-9_-')"
+            SHORT_SHA="${GITHUB_SHA::7}"
+            BUILD_ID="${SAFE}-${SHORT_SHA}"
+            BIN_NAME="${BUILD_ID}.bin"
+            BUILT_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            LABEL_FILE="${SRC%.ino}.name"
+            if [ -f "$LABEL_FILE" ]; then
+              DISPLAY_NAME="$(head -n 1 "$LABEL_FILE" | tr -d '\r')"
+            else
+              DISPLAY_NAME="$BASE"
+            fi
+
+            SKETCH_DIR=".build/${SAFE}"
+            OUT_DIR="${SKETCH_DIR}/out"
+            rm -rf "$SKETCH_DIR"
+            mkdir -p "$OUT_DIR"
+            cp "$SRC" "${SKETCH_DIR}/${SAFE}.ino"
+
+            echo "Compiling $DISPLAY_NAME"
+            if arduino-cli compile \
+              --fqbn esp32:esp32:esp32doit-devkit-v1 \
+              --output-dir "$OUT_DIR" \
+              "$SKETCH_DIR"; then
+              APP_BIN="$(find "$OUT_DIR" -maxdepth 1 -type f -name '*.ino.bin' | head -n 1)"
+              if [ -n "$APP_BIN" ] && [ -f "$APP_BIN" ]; then
+                cp "$APP_BIN" "site/bins/$BIN_NAME"
+                SIZE="$(wc -c < "site/bins/$BIN_NAME" | tr -d ' ')"
+                STATUS="ready"
+                FILE="bins/$BIN_NAME"
+              else
+                SIZE=0
+                STATUS="failed"
+                FILE=""
+                FAILED=1
+              fi
+            else
+              SIZE=0
+              STATUS="failed"
+              FILE=""
+              FAILED=1
+            fi
+
+            python3 - "$BUILD_ID" "$DISPLAY_NAME" "$FILE" "$SIZE" "$GITHUB_SHA" "$BUILT_AT" "$STATUS" "$SRC" <<'PY'
+          import json, pathlib, sys
+          build_id, name, file_name, size, commit, built_at, status, source = sys.argv[1:]
+          manifest = pathlib.Path('site/builds.json')
+          try:
+              items = json.loads(manifest.read_text())
+          except Exception:
+              items = []
+          entry = {
+              'id': build_id,
+              'name': name,
+              'file': file_name or None,
+              'size': int(size),
+              'commit': commit,
+              'builtAt': built_at,
+              'status': status,
+              'board': 'ESP32 DOIT DevKit V1',
+              'source': source,
+              'ota': True
+          }
+          items = [x for x in items if x.get('id') != build_id]
+          items.append(entry)
+          items.sort(key=lambda x: x.get('builtAt',''), reverse=True)
+          items = items[:40]
+          manifest.write_text(json.dumps(items, indent=2, ensure_ascii=False) + '\n')
+          keep = {x.get('file') for x in items if x.get('file')}
+          bins = pathlib.Path('site/bins')
+          for f in bins.glob('*.bin'):
+              rel = f'bins/{f.name}'
+              if rel not in keep:
+                  f.unlink()
+          PY
+          done < <(find firmware -maxdepth 1 -type f -name '*.ino' | sort)
+
+          if [ "$FOUND" -eq 0 ]; then
+            echo 'No .ino files found in firmware/'
+            exit 1
+          fi
+
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+
+      - name: Commit generated BIN history
+        shell: bash
+        run: |
+          git config user.name "esp32-bin-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add site/builds.json site/bins
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit"
+          else
+            git commit -m "build: publish ESP32 OTA binary [skip ci]"
+            git push origin HEAD:main
+          fi
+
+      - name: Upload latest build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: VALLIAN_ESP32_OTA
-          path: build/VALLIAN_ESP32_OTA.bin
-          if-no-files-found: error
+          name: ESP32-OTA-BIN
+          path: site/bins/*.bin
+          if-no-files-found: warn
           retention-days: 30
+
+      - name: Configure GitHub Pages
+        id: pages
+        continue-on-error: true
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload website to Pages
+        continue-on-error: true
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy website to Pages
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+
+      - name: Fail workflow if compiler failed
+        if: steps.compile.outputs.failed == '1'
+        run: exit 1
