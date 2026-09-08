@@ -1,0 +1,11 @@
+{
+  "style": "brat",
+  "size": 2,
+  "scenes": [
+    {"text":"it's stress relief","duration":2000,"invert":false},
+    {"text":"from everything","duration":1600,"invert":true},
+    {"text":"tell me","duration":1200,"invert":false},
+    {"text":"tell me you love me","duration":2400,"invert":false},
+    {"text":"","duration":800,"invert":false}
+  ]
+}
