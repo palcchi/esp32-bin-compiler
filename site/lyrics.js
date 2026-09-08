@@ -6,11 +6,50 @@ function draw(text='',invert=false){ctx.fillStyle=invert?'#e9fdff':'#000';ctx.fi
 function syncSelected(){const scenes=parse(),s=scenes[idx];inv.checked=!!s?.invert}
 function selectScene(i){stop();const scenes=parse();if(!scenes.length)return;idx=Math.max(0,Math.min(i,scenes.length-1));const s=scenes[idx];draw(s.text,s.invert);status.textContent=`Scene ${idx+1} · ${s.text||'Pause'}${s.invert?' · INVERT':''}`;timeStatus.textContent=`${s.seconds.toFixed(2)}s`;syncSelected();renderList()}
 function setSceneInvert(sceneIndex,value){const scenes=parse(),s=scenes[sceneIndex];if(!s)return;const rows=ta.value.split('\n'),label=s.sourceText||'[pause]';rows[s.lineIndex]=`${label} | ${s.seconds}${value?' | inv':''}`;ta.value=rows.join('\n');idx=sceneIndex;refresh(false);selectScene(sceneIndex)}
-function renderList(){const scenes=parse();count.textContent=`${scenes.length} scene${scenes.length===1?'':'s'}`;list.innerHTML='';let total=0;scenes.forEach((s,i)=>{const row=document.createElement('div');row.className='scene-row'+(i===idx?' active':'');row.tabIndex=0;row.innerHTML=`<span>${String(i+1).padStart(2,'0')}</span><b>${s.text||'PAUSE'}</b><em>${s.seconds.toFixed(2)}s</em><button class="scene-invert${s.invert?' on':''}" type="button" aria-label="Toggle invert scene ${i+1}">INV</button>`;row.addEventListener('click',e=>{if(!e.target.closest('.scene-invert'))selectScene(i)});row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectScene(i)}});row.querySelector('.scene-invert').onclick=e=>{e.stopPropagation();setSceneInvert(i,!s.invert)};list.append(row);total+=s.seconds});return{scenes,total}}
+function renderList(){const scenes=parse();count.textContent=`${scenes.length} scene${scenes.length===1?'':'s'}`;list.innerHTML='';let total=0;scenes.forEach((s,i)=>{const row=document.createElement('div');row.className='scene-row'+(i===idx?' active':'');row.tabIndex=0;row.innerHTML=`<span>${String(i+1).padStart(2,'0')}</span><b>${s.text||'PAUSE'}</b><em>${s.seconds.toFixed(2)}s</em><button class="scene-invert${s.invert?' on':''}" type="button">INV</button>`;row.addEventListener('click',e=>{if(!e.target.closest('.scene-invert'))selectScene(i)});row.querySelector('.scene-invert').onclick=e=>{e.stopPropagation();setSceneInvert(i,!s.invert)};list.append(row);total+=s.seconds});return{scenes,total}}
 function refresh(reset=true){stop();const {scenes,total}=renderList();if(reset)idx=0;if(idx>=scenes.length)idx=Math.max(0,scenes.length-1);const s=scenes[idx];draw(s?.text||'',!!s?.invert);status.textContent=s?`Scene ${idx+1} · ${s.text||'Pause'}${s.invert?' · INVERT':''}`:'No scenes';timeStatus.textContent=`Total ${total.toFixed(2)}s`;syncSelected()}
 ta.addEventListener('input',()=>refresh(true));[style,size].forEach(e=>e.addEventListener('input',()=>refresh(false)));inv.addEventListener('change',()=>setSceneInvert(idx,inv.checked));
 function stop(){timers.forEach(clearTimeout);timers=[]}
-function play(){stop();const {scenes}=renderList();if(!scenes.length)return;idx=0;let elapsed=0;scenes.forEach((s,i)=>{const at=elapsed;timers.push(setTimeout(()=>{idx=i;draw(s.text,s.invert);status.textContent=`Scene ${i+1} · ${s.text||'Pause'}${s.invert?' · INVERT':''}`;timeStatus.textContent=`${at.toFixed(2)}s → ${(at+s.seconds).toFixed(2)}s`;syncSelected();renderList()},at*1000));elapsed+=s.seconds});timers.push(setTimeout(()=>{timeStatus.textContent=`Finished · ${elapsed.toFixed(2)}s`},elapsed*1000))}
+function play(){stop();const {scenes}=renderList();if(!scenes.length)return;idx=0;let elapsed=0;scenes.forEach((s,i)=>{const at=elapsed;timers.push(setTimeout(()=>{idx=i;draw(s.text,s.invert);status.textContent=`Scene ${i+1} · ${s.text||'Pause'}${s.invert?' · INVERT':''}`;timeStatus.textContent=`${at.toFixed(2)}s → ${(at+s.seconds).toFixed(2)}s`;syncSelected();renderList()},at*1000));elapsed+=s.seconds});timers.push(setTimeout(()=>timeStatus.textContent=`Finished · ${elapsed.toFixed(2)}s`,elapsed*1000))}
 $('#playLyrics').onclick=play;
 $('#exportLyrics').onclick=()=>{const {scenes}=renderList();let out='#pragma once\n#include <Arduino.h>\n\nstruct LyricScene { const char* text; uint32_t duration; bool invert; };\nconst LyricScene lyricScenes[] PROGMEM = {\n';for(const s of scenes){const safe=s.text.replace(/\\/g,'\\\\').replace(/"/g,'\\"');out+=`  {"${safe}", ${Math.round(s.seconds*1000)}, ${s.invert?'true':'false'}},\n`}out+='};\nconst uint16_t LYRIC_SCENE_COUNT = sizeof(lyricScenes) / sizeof(lyricScenes[0]);\n';const blob=new Blob([out],{type:'text/plain'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='Lyrics.h';a.click();setTimeout(()=>URL.revokeObjectURL(u),500)};
+
+const buildBtn=$('#buildBin'),buildBox=$('#buildStatus'),buildTitle=$('#buildStatusTitle'),buildText=$('#buildStatusText'),downloadBin=$('#downloadBuiltBin');
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function pollBuild(commit){
+  for(let attempt=0;attempt<60;attempt++){
+    await wait(attempt?4000:2500);
+    try{
+      const r=await fetch(`/builds.json?t=${Date.now()}`,{cache:'no-store'});
+      if(!r.ok)continue;
+      const builds=await r.json();
+      const found=builds.find(b=>b.commit===commit);
+      if(found?.status==='ready'&&found.file)return found;
+      if(found?.status==='failed')throw new Error('Compiler gagal. Cek BIN Builds.');
+      buildText.textContent=`Compiler masih bekerja... ${Math.min(99,10+attempt*2)}%`;
+    }catch(e){if(String(e.message).includes('Compiler gagal'))throw e}
+  }
+  throw new Error('Build belum selesai setelah 4 menit. Cek halaman BIN Builds.');
+}
+async function buildBin(){
+  const scenes=parse();
+  if(!scenes.length)return;
+  buildBtn.disabled=true;downloadBin.classList.add('hidden');buildBox.classList.remove('hidden');
+  buildTitle.textContent='Mengirim scene...';buildText.textContent='Membuat konfigurasi firmware.';
+  try{
+    const payload={style:style.value,size:+size.value,scenes:scenes.map(s=>({text:s.text,duration:Math.round(s.seconds*1000),invert:s.invert}))};
+    const r=await fetch('/api/build-lyrics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok){
+      if(data.code==='TOKEN_MISSING')throw new Error('Build service belum aktif. GITHUB_BUILD_TOKEN belum dipasang di Vercel.');
+      throw new Error(data.error||'Gagal memulai build');
+    }
+    buildTitle.textContent=`Build ${data.short} dimulai`;
+    buildText.textContent='GitHub Actions sedang render OLED dan compile OTA .bin.';
+    const result=await pollBuild(data.commit);
+    buildTitle.textContent='OTA .BIN siap';buildText.textContent=`${Math.round(result.size/1024)} KB · ${result.id}`;
+    downloadBin.href='/'+result.file;downloadBin.download='';downloadBin.classList.remove('hidden');
+  }catch(e){buildTitle.textContent='Build belum berhasil';buildText.textContent=e.message||String(e)}finally{buildBtn.disabled=false}
+}
+buildBtn.onclick=buildBin;
 refresh();
