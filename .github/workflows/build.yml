@@ -33,53 +33,82 @@ jobs:
           python3 <<'PY'
           import json, pathlib, math
           from PIL import Image, ImageDraw, ImageFont
+
           cfg=json.loads(pathlib.Path('firmware/lyrics.json').read_text())
           scenes=cfg.get('scenes',[])[:120]
           style=cfg.get('style','brat')
-          animation=cfg.get('animation','none')
           size=max(1,min(3,int(cfg.get('size',2))))
+          allowed={'none','slide','slidewords','words','popwords'}
           candidates=['/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf','/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf']
           font_path=next((p for p in candidates if pathlib.Path(p).exists()),candidates[-1])
-          def wrap(draw,text,font,maxw):
-            words=text.split(); lines=[]; cur=''
-            for word in words:
-              test=(cur+' '+word).strip()
-              if draw.textbbox((0,0),test,font=font)[2] <= maxw: cur=test
-              else:
-                if cur: lines.append(cur)
-                cur=word
-            if cur: lines.append(cur)
-            return lines or ['']
-          def scene_image(scene,progress=1.0):
-            invert=bool(scene.get('invert',False)); bg=1 if invert else 0; fg=0 if invert else 1
-            text=str(scene.get('text',''))
+
+          def fit_layout(text):
             if style=='brat': text=text.lower()
             base={1:15,2:20,3:24}[size] if style=='brat' else ({1:8,2:10,3:12}[size] if style=='tiny' else {1:11,2:14,3:18}[size])
-            tmp=Image.new('1',(128,64),bg); d=ImageDraw.Draw(tmp)
+            probe=Image.new('1',(128,64),0); d=ImageDraw.Draw(probe)
+            max_lines=5 if style=='tiny' else 4
             for fs in range(base,6,-1):
-              font=ImageFont.truetype(font_path,fs); lines=wrap(d,text,font,120)
+              font=ImageFont.truetype(font_path,fs)
+              words=text.split(); lines=[]; cur=''
+              for word in words:
+                test=(cur+' '+word).strip()
+                if d.textbbox((0,0),test,font=font)[2] <= 120: cur=test
+                else:
+                  if cur: lines.append(cur)
+                  cur=word
+              if cur: lines.append(cur)
+              if not lines: lines=['']
               lh=max(7,int(fs*(0.9 if style=='brat' else 1.05)))
-              if len(lines)<=4 and len(lines)*lh<=58: break
-            layer=Image.new('1',(128,64),0); draw=ImageDraw.Draw(layer)
-            y=(64-len(lines)*lh)//2
-            for line in lines[:4]:
-              box=draw.textbbox((0,0),line,font=font); w=box[2]-box[0]
-              draw.text(((128-w)//2,y),line,font=font,fill=1); y+=lh
-            p=max(0,min(1,progress)); xoff=yoff=0; scale=1.0
-            if animation=='pop':
-              q=min(1,p/.35); c1=1.70158; q=1+(c1+1)*(q-1)**3+c1*(q-1)**2; scale=.35+.65*q
-            elif animation=='slide':
-              q=min(1,p/.30); q=1-(1-q)**3; yoff=round(22*(1-q))
-            elif animation=='shake' and p<=.35:
-              amp=5*(1-p/.35); xoff=round(math.sin(p*80)*amp); yoff=round(math.cos(p*55)*amp*.35)
-            if scale!=1:
-              nw=max(1,round(128*scale)); nh=max(1,round(64*scale)); layer=layer.resize((nw,nh),Image.Resampling.NEAREST)
-              canvas=Image.new('1',(128,64),0); canvas.paste(layer,((128-nw)//2+xoff,(64-nh)//2+yoff)); layer=canvas
-            elif xoff or yoff:
-              canvas=Image.new('1',(128,64),0); canvas.paste(layer,(xoff,yoff)); layer=canvas
-            if invert:
-              out=Image.new('1',(128,64),1); out.paste(0,mask=layer); return out
-            return layer
+              if len(lines)<=max_lines and len(lines)*lh<=58: break
+            lines=lines[:max_lines]
+            items=[]; y=(64-len(lines)*lh)//2
+            for line in lines:
+              words=line.split()
+              widths=[d.textbbox((0,0),w,font=font)[2] for w in words]
+              space=max(1,d.textbbox((0,0),' ',font=font)[2])
+              total=sum(widths)+space*max(0,len(words)-1)
+              x=(128-total)/2
+              for word,w in zip(words,widths):
+                items.append((word,x+w/2,y,w))
+                x+=w+space
+              y+=lh
+            return font,items,lh
+
+          def draw_word(im,font,item,fg,yoff=0,scale=1.0):
+            word,cx,y,w=item
+            if scale==1.0:
+              d=ImageDraw.Draw(im); box=d.textbbox((0,0),word,font=font); tw=box[2]-box[0]
+              d.text((round(cx-tw/2),round(y+yoff)),word,font=font,fill=fg); return
+            mask=Image.new('L',(128,64),0); md=ImageDraw.Draw(mask); box=md.textbbox((0,0),word,font=font); tw=box[2]-box[0]; th=max(1,box[3]-box[1])
+            md.text((round(cx-tw/2),round(y)),word,font=font,fill=255)
+            crop=mask.crop(mask.getbbox() or (0,0,1,1)); nw=max(1,round(crop.width*scale)); nh=max(1,round(crop.height*scale)); crop=crop.resize((nw,nh),Image.Resampling.NEAREST)
+            px=round(cx-nw/2); py=round(y+(th-nh)/2)
+            fill=Image.new('1',(nw,nh),fg); im.paste(fill,(px,py),crop)
+
+          def render(scene,mode='none',visible=None,active_progress=1.0,whole_progress=1.0):
+            invert=bool(scene.get('invert',False)); bg=1 if invert else 0; fg=0 if invert else 1
+            im=Image.new('1',(128,64),bg); text=str(scene.get('text',''))
+            if not text: return im
+            font,items,_=fit_layout(text); n=len(items)
+            if mode=='slide':
+              p=max(0,min(1,whole_progress)); q=1-(1-p)**3; off=round(22*(1-q))
+              for item in items: draw_word(im,font,item,fg,yoff=off)
+              return im
+            if mode in {'words','slidewords','popwords'}:
+              visible=n if visible is None else max(0,min(n,visible))
+              for i,item in enumerate(items):
+                if i<visible: draw_word(im,font,item,fg)
+              if visible<n and active_progress>0:
+                item=items[visible]; p=max(0,min(1,active_progress))
+                if mode=='words': draw_word(im,font,item,fg)
+                elif mode=='slidewords':
+                  q=1-(1-p)**3; draw_word(im,font,item,fg,yoff=round(18*(1-q)))
+                elif mode=='popwords':
+                  c1=1.70158; q=1+(c1+1)*(p-1)**3+c1*(p-1)**2; draw_word(im,font,item,fg,scale=max(.2,.25+.75*q))
+              return im
+            for item in items: draw_word(im,font,item,fg)
+            return im
+
           def pack(im):
             px=im.load(); data=[]
             for page in range(8):
@@ -89,19 +118,31 @@ jobs:
                   if px[x,page*8+bit]: b|=1<<bit
                 data.append(b)
             return data
+
           frames=[]; durations=[]
           for s in scenes:
-            total=max(50,int(s.get('duration',1500)))
-            if animation=='none' or not str(s.get('text','')):
-              frames.append(pack(scene_image(s,1))); durations.append(total); continue
-            entrance=min(360,max(160,int(total*.35)))
-            steps=4
-            each=max(35,entrance//steps)
-            for i in range(steps):
-              frames.append(pack(scene_image(s,(i+1)/steps*.35))); durations.append(each)
-            used=each*steps
-            frames.append(pack(scene_image(s,1))); durations.append(max(50,total-used))
+            total=max(50,int(s.get('duration',1500))); mode=s.get('animation','none')
+            if mode not in allowed: mode='none'
+            text=str(s.get('text','')).strip(); words=text.split()
+            if not text or mode=='none':
+              frames.append(pack(render(s))); durations.append(total); continue
+            if mode=='slide':
+              entrance=min(360,max(160,int(total*.35))); steps=4; each=max(35,entrance//steps)
+              for p in (.18,.42,.72,1.0): frames.append(pack(render(s,'slide',whole_progress=p))); durations.append(each)
+              frames.append(pack(render(s))); durations.append(max(50,total-each*steps)); continue
+            n=len(words)
+            if mode=='words':
+              step=max(50,min(260,int(total*.72/max(1,n))))
+              for i in range(n): frames.append(pack(render(s,'words',visible=i,active_progress=1))); durations.append(step)
+              frames.append(pack(render(s))); durations.append(max(50,total-step*n)); continue
+            step=max(35,min(150,int(total*.72/max(1,n*2))))
+            for i in range(n):
+              frames.append(pack(render(s,mode,visible=i,active_progress=.42))); durations.append(step)
+              frames.append(pack(render(s,mode,visible=i,active_progress=1.0))); durations.append(step)
+            frames.append(pack(render(s))); durations.append(max(50,total-step*n*2))
+
           if not frames: frames=[[0]*1024]; durations=[1000]
+          if len(frames)>240: raise SystemExit(f'Too many generated frames: {len(frames)} > 240')
           out=['#pragma once','#include <Arduino.h>',f'#define LYRIC_FRAME_COUNT {len(frames)}']
           for i,data in enumerate(frames):
             out.append(f'const uint8_t lyric_frame_{i}[1024] PROGMEM = {{')
@@ -110,7 +151,7 @@ jobs:
           out.append('const uint8_t* const lyric_frames[] = {'+','.join(f'lyric_frame_{i}' for i in range(len(frames)))+'};')
           out.append('const uint32_t lyric_durations[] = {'+','.join(map(str,durations))+'};')
           pathlib.Path('firmware/LyricsFrames.h').write_text('\n'.join(out)+'\n')
-          print(f'Rendered {len(frames)} OLED frames using animation={animation}')
+          print(f'Rendered {len(frames)} OLED frames with per-scene animation')
           PY
 
       - name: Cache Arduino core
