@@ -1,11 +1,64 @@
 {
   "style": "brat",
   "size": 2,
+  "createdAt": "2026-09-08T17:16:24.913Z",
+  "estimatedFrames": 23,
   "scenes": [
-    {"text":"it's stress relief","duration":2000,"invert":false},
-    {"text":"from everything","duration":1600,"invert":true},
-    {"text":"tell me","duration":1200,"invert":false},
-    {"text":"tell me you love me","duration":2400,"invert":false},
-    {"text":"","duration":800,"invert":false}
+    {
+      "text": "Harvey!",
+      "duration": 1500,
+      "invert": true,
+      "animation": "words",
+      "order": 0
+    },
+    {
+      "text": "Nobody knows what i see",
+      "duration": 3300,
+      "invert": true,
+      "animation": "words",
+      "order": 1
+    },
+    {
+      "text": "Nobody knows i'm waiting",
+      "duration": 3500,
+      "invert": true,
+      "animation": "words",
+      "order": 2
+    },
+    {
+      "text": "waiting for you",
+      "duration": 1500,
+      "invert": true,
+      "animation": "words",
+      "order": 3
+    },
+    {
+      "text": "to call",
+      "duration": 1500,
+      "invert": true,
+      "animation": "words",
+      "order": 4
+    },
+    {
+      "text": "to call.",
+      "duration": 1000,
+      "invert": true,
+      "animation": "none",
+      "order": 5
+    },
+    {
+      "text": "to call..",
+      "duration": 1000,
+      "invert": true,
+      "animation": "none",
+      "order": 6
+    },
+    {
+      "text": "to call...",
+      "duration": 1000,
+      "invert": true,
+      "animation": "none",
+      "order": 7
+    }
   ]
 }
