@@ -24,6 +24,78 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Python renderer
+        run: python3 -m pip install pillow
+
+      - name: Render lyrics to 128x64 frames
+        shell: bash
+        run: |
+          python3 <<'PY'
+          import json, pathlib
+          from PIL import Image, ImageDraw, ImageFont
+
+          cfg=json.loads(pathlib.Path('firmware/lyrics.json').read_text())
+          scenes=cfg.get('scenes',[])[:200]
+          style=cfg.get('style','brat')
+          size=max(1,min(3,int(cfg.get('size',2))))
+          font_candidates=[
+            '/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf',
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+          ]
+          font_path=next((p for p in font_candidates if pathlib.Path(p).exists()),font_candidates[-1])
+
+          def wrap(draw,text,font,maxw):
+            words=text.split(); lines=[]; cur=''
+            for word in words:
+              test=(cur+' '+word).strip()
+              if draw.textbbox((0,0),test,font=font)[2] <= maxw: cur=test
+              else:
+                if cur: lines.append(cur)
+                cur=word
+            if cur: lines.append(cur)
+            return lines or ['']
+
+          def render(scene):
+            invert=bool(scene.get('invert',False))
+            bg=1 if invert else 0; fg=0 if invert else 1
+            im=Image.new('1',(128,64),bg)
+            draw=ImageDraw.Draw(im)
+            text=str(scene.get('text',''))
+            if style=='brat': text=text.lower()
+            base={1:15,2:20,3:24}[size] if style=='brat' else {1:11,2:14,3:18}[size]
+            for fs in range(base,6,-1):
+              font=ImageFont.truetype(font_path,fs)
+              lines=wrap(draw,text,font,120)
+              lh=max(7,int(fs*(0.9 if style=='brat' else 1.05)))
+              if len(lines)<=4 and len(lines)*lh<=58: break
+            y=(64-len(lines)*lh)//2
+            for line in lines[:4]:
+              box=draw.textbbox((0,0),line,font=font)
+              w=box[2]-box[0]
+              draw.text(((128-w)//2,y),line,font=font,fill=fg)
+              y+=lh
+            data=[]
+            px=im.load()
+            for page in range(8):
+              for x in range(128):
+                b=0
+                for bit in range(8):
+                  if px[x,page*8+bit]: b|=1<<bit
+                data.append(b)
+            return data
+
+          frames=[render(s) for s in scenes] or [[0]*1024]
+          durations=[max(50,int(s.get('duration',1500))) for s in scenes] or [1000]
+          out=['#pragma once','#include <Arduino.h>',f'#define LYRIC_FRAME_COUNT {len(frames)}']
+          for i,data in enumerate(frames):
+            out.append(f'const uint8_t lyric_frame_{i}[1024] PROGMEM = {{')
+            for j in range(0,1024,32): out.append(','.join(f'0x{x:02x}' for x in data[j:j+32])+',')
+            out.append('};')
+          out.append('const uint8_t* const lyric_frames[] = {'+','.join(f'lyric_frame_{i}' for i in range(len(frames)))+'};')
+          out.append('const uint32_t lyric_durations[] = {'+','.join(map(str,durations))+'};')
+          pathlib.Path('firmware/LyricsFrames.h').write_text('\n'.join(out)+'\n')
+          PY
+
       - name: Cache Arduino core
         uses: actions/cache@v4
         with:
@@ -38,8 +110,7 @@ jobs:
         run: |
           arduino-cli config init || true
           arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
-          arduino-cli core list | grep -q 'esp32:esp32.*3.3.11' || \
-            arduino-cli core install esp32:esp32@3.3.11 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core list | grep -q 'esp32:esp32.*3.3.11' || arduino-cli core install esp32:esp32@3.3.11 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
 
       - name: Compile firmware and update manifest
         id: compile
@@ -48,104 +119,51 @@ jobs:
           set -u
           mkdir -p site/bins .build
           FAILED=0
-          FOUND=0
-
-          while IFS= read -r SRC; do
-            FOUND=1
-            BASE="$(basename "$SRC" .ino)"
-            SAFE="$(printf '%s' "$BASE" | tr '[:upper:] ' '[:lower:]-' | tr -cd 'a-z0-9_-')"
-            SHORT_SHA="${GITHUB_SHA::7}"
-            BUILD_ID="${SAFE}-${SHORT_SHA}"
-            BIN_NAME="${BUILD_ID}.bin"
-            BUILT_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-            LABEL_FILE="${SRC%.ino}.name"
-            if [ -f "$LABEL_FILE" ]; then
-              DISPLAY_NAME="$(head -n 1 "$LABEL_FILE" | tr -d '\r')"
-            else
-              DISPLAY_NAME="$BASE"
-            fi
-
-            SKETCH_DIR=".build/${SAFE}"
-            OUT_DIR="${SKETCH_DIR}/out"
-            rm -rf "$SKETCH_DIR"
-            mkdir -p "$OUT_DIR"
-            cp "$SRC" "${SKETCH_DIR}/${SAFE}.ino"
-
-            echo "Compiling $DISPLAY_NAME"
-            if arduino-cli compile \
-              --fqbn esp32:esp32:esp32doit-devkit-v1 \
-              --output-dir "$OUT_DIR" \
-              "$SKETCH_DIR"; then
-              APP_BIN="$(find "$OUT_DIR" -maxdepth 1 -type f -name '*.ino.bin' | head -n 1)"
-              if [ -n "$APP_BIN" ] && [ -f "$APP_BIN" ]; then
-                cp "$APP_BIN" "site/bins/$BIN_NAME"
-                SIZE="$(wc -c < "site/bins/$BIN_NAME" | tr -d ' ')"
-                STATUS="ready"
-                FILE="bins/$BIN_NAME"
-              else
-                SIZE=0
-                STATUS="failed"
-                FILE=""
-                FAILED=1
-              fi
-            else
-              SIZE=0
-              STATUS="failed"
-              FILE=""
-              FAILED=1
-            fi
-
-            python3 - "$BUILD_ID" "$DISPLAY_NAME" "$FILE" "$SIZE" "$GITHUB_SHA" "$BUILT_AT" "$STATUS" "$SRC" <<'PY'
-          import json, pathlib, sys
-          build_id, name, file_name, size, commit, built_at, status, source = sys.argv[1:]
-          manifest = pathlib.Path('site/builds.json')
-          try:
-              items = json.loads(manifest.read_text())
-          except Exception:
-              items = []
-          entry = {
-              'id': build_id,
-              'name': name,
-              'file': file_name or None,
-              'size': int(size),
-              'commit': commit,
-              'builtAt': built_at,
-              'status': status,
-              'board': 'ESP32 DOIT DevKit V1',
-              'source': source,
-              'ota': True
-          }
-          items = [x for x in items if x.get('id') != build_id]
-          items.append(entry)
-          items.sort(key=lambda x: x.get('builtAt',''), reverse=True)
-          items = items[:40]
-          manifest.write_text(json.dumps(items, indent=2, ensure_ascii=False) + '\n')
-          keep = {x.get('file') for x in items if x.get('file')}
-          bins = pathlib.Path('site/bins')
-          for f in bins.glob('*.bin'):
-              rel = f'bins/{f.name}'
-              if rel not in keep:
-                  f.unlink()
-          PY
-          done < <(find firmware -maxdepth 1 -type f -name '*.ino' | sort)
-
-          if [ "$FOUND" -eq 0 ]; then
-            echo 'No .ino files found in firmware/'
-            exit 1
+          SRC='firmware/firmware.ino'
+          BASE='firmware'
+          SAFE='firmware'
+          SHORT_SHA="${GITHUB_SHA::7}"
+          BUILD_ID="lyrics-${SHORT_SHA}"
+          BIN_NAME="${BUILD_ID}.bin"
+          BUILT_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          DISPLAY_NAME='OLED Lyrics Build'
+          SKETCH_DIR='.build/firmware'
+          OUT_DIR="${SKETCH_DIR}/out"
+          rm -rf "$SKETCH_DIR" && mkdir -p "$OUT_DIR"
+          cp firmware/firmware.ino "${SKETCH_DIR}/firmware.ino"
+          cp firmware/LyricsFrames.h "${SKETCH_DIR}/LyricsFrames.h"
+          if arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --output-dir "$OUT_DIR" "$SKETCH_DIR"; then
+            APP_BIN="$(find "$OUT_DIR" -maxdepth 1 -type f -name '*.ino.bin' | head -n 1)"
+            cp "$APP_BIN" "site/bins/$BIN_NAME"
+            SIZE="$(wc -c < "site/bins/$BIN_NAME" | tr -d ' ')"
+            STATUS='ready'; FILE="bins/$BIN_NAME"
+          else
+            SIZE=0; STATUS='failed'; FILE=''; FAILED=1
           fi
-
+          python3 - "$BUILD_ID" "$DISPLAY_NAME" "$FILE" "$SIZE" "$GITHUB_SHA" "$BUILT_AT" "$STATUS" "$SRC" <<'PY'
+          import json,pathlib,sys
+          build_id,name,file_name,size,commit,built_at,status,source=sys.argv[1:]
+          p=pathlib.Path('site/builds.json')
+          try: items=json.loads(p.read_text())
+          except: items=[]
+          items=[x for x in items if x.get('id')!=build_id]
+          items.insert(0,{'id':build_id,'name':name,'file':file_name or None,'size':int(size),'commit':commit,'builtAt':built_at,'status':status,'board':'ESP32 DOIT DevKit V1','source':source,'ota':True})
+          items=items[:40]
+          p.write_text(json.dumps(items,indent=2,ensure_ascii=False)+'\n')
+          keep={x.get('file') for x in items if x.get('file')}
+          for f in pathlib.Path('site/bins').glob('*.bin'):
+            if f'bins/{f.name}' not in keep: f.unlink()
+          PY
           echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
 
       - name: Commit generated BIN history
         shell: bash
         run: |
-          git config user.name "esp32-bin-bot"
-          git config user.email "actions@users.noreply.github.com"
+          git config user.name 'esp32-bin-bot'
+          git config user.email 'actions@users.noreply.github.com'
           git add site/builds.json site/bins
-          if git diff --cached --quiet; then
-            echo "No generated changes to commit"
-          else
-            git commit -m "build: publish ESP32 OTA binary [skip ci]"
+          if ! git diff --cached --quiet; then
+            git commit -m 'build: publish OLED lyrics OTA binary [skip ci]'
             git push origin HEAD:main
           fi
 
