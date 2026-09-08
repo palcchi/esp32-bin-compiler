@@ -43,34 +43,45 @@ jobs:
           font_path=next((p for p in candidates if pathlib.Path(p).exists()),candidates[-1])
 
           def fit_layout(text):
-            if style=='brat': text=text.lower()
-            base={1:15,2:20,3:24}[size] if style=='brat' else ({1:8,2:10,3:12}[size] if style=='tiny' else {1:11,2:14,3:18}[size])
+            brat=style=='brat'
+            if brat: text=text.lower()
+            base={1:15,2:20,3:24}[size] if brat else ({1:8,2:10,3:12}[size] if style=='tiny' else {1:11,2:14,3:18}[size])
             probe=Image.new('1',(128,64),0); d=ImageDraw.Draw(probe)
             max_lines=5 if style=='tiny' else 4
+            max_width=112 if brat else 120
             for fs in range(base,6,-1):
               font=ImageFont.truetype(font_path,fs)
               words=text.split(); lines=[]; cur=''
               for word in words:
                 test=(cur+' '+word).strip()
-                if d.textbbox((0,0),test,font=font)[2] <= 120: cur=test
+                if d.textbbox((0,0),test,font=font)[2] <= max_width: cur=test
                 else:
                   if cur: lines.append(cur)
                   cur=word
               if cur: lines.append(cur)
               if not lines: lines=['']
-              lh=max(7,int(fs*(0.9 if style=='brat' else 1.05)))
+              lh=max(7,int(fs*(0.9 if brat else 1.05)))
               if len(lines)<=max_lines and len(lines)*lh<=58: break
             lines=lines[:max_lines]
-            items=[]; y=(64-len(lines)*lh)//2
+            rows=[]
             for line in lines:
-              words=line.split()
-              widths=[d.textbbox((0,0),w,font=font)[2] for w in words]
+              ws=line.split(); widths=[d.textbbox((0,0),w,font=font)[2] for w in ws]
               space=max(1,d.textbbox((0,0),' ',font=font)[2])
-              total=sum(widths)+space*max(0,len(words)-1)
-              x=(128-total)/2
-              for word,w in zip(words,widths):
+              total=sum(widths)+space*max(0,len(ws)-1)
+              rows.append((ws,widths,space,total))
+            widest=max(1,max((r[3] for r in rows),default=1))
+            block_width=min(112,max(54,widest)) if brat else widest
+            items=[]; y=(64-len(rows)*lh)//2
+            for ws,widths,space,total in rows:
+              if brat and len(ws)>1:
+                gap=(block_width-sum(widths))/(len(ws)-1)
+                x=(128-block_width)/2
+              else:
+                gap=space
+                x=(128-total)/2
+              for word,w in zip(ws,widths):
                 items.append((word,x+w/2,y,w))
-                x+=w+space
+                x+=w+gap
               y+=lh
             return font,items,lh
 
@@ -156,7 +167,7 @@ jobs:
           out.append('const uint8_t* const lyric_frames[] = {'+','.join(f'lyric_frame_{i}' for i in range(len(frames)))+'};')
           out.append('const uint32_t lyric_durations[] = {'+','.join(map(str,durations))+'};')
           pathlib.Path('firmware/LyricsFrames.h').write_text('\n'.join(out)+'\n')
-          print(f'Rendered {len(frames)} OLED frames with recentered word animation')
+          print(f'Rendered {len(frames)} OLED frames with justified BRAT blocks')
           PY
 
       - name: Cache Arduino core
