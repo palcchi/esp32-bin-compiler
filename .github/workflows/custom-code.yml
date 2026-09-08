@@ -1,0 +1,133 @@
+name: Build Custom ESP32 Code
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'custom_build/request.json'
+      - '.github/workflows/custom-code.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: esp32-custom-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare sketch
+        shell: bash
+        run: |
+          mkdir -p .build/custom
+          python3 <<'PY'
+          import json,pathlib
+          r=json.loads(pathlib.Path('custom_build/request.json').read_text())
+          code=r.get('code','')
+          if r.get('preserveOta',True):
+            prefix=r'''#include <WiFi.h>
+#include <WebServer.h>
+#include <Update.h>
+#define setup user_setup
+#define loop user_loop
+'''
+            suffix=r'''
+#undef setup
+#undef loop
+const char* __vallian_ssid="VALLIAN-ESP32";
+const char* __vallian_pass="12345678";
+WebServer __vallian_server(80);
+const char __vallian_page[] = R"rawliteral(<!doctype html><html><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:-apple-system;background:#0b0d10;color:#fff;padding:24px}form{max-width:420px;padding:20px;border:1px solid #333;border-radius:16px}button,input{width:100%;box-sizing:border-box;margin-top:12px;padding:12px}</style><body><h2>VALLIAN ESP32</h2><p>Custom Firmware OTA</p><form method="POST" action="/update" enctype="multipart/form-data"><input type="file" name="firmware" accept=".bin" required><button>Install Firmware</button></form></body></html>)rawliteral";
+void __vallian_ota(){
+  WiFi.mode(WIFI_AP); WiFi.softAP(__vallian_ssid,__vallian_pass);
+  __vallian_server.on("/",HTTP_GET,[](){__vallian_server.send(200,"text/html",__vallian_page);});
+  __vallian_server.on("/update",HTTP_POST,[](){if(Update.hasError())__vallian_server.send(500,"text/plain","UPDATE FAILED");else{__vallian_server.send(200,"text/plain","UPDATE SUCCESS - RESTARTING");delay(700);ESP.restart();}},[](){HTTPUpload& u=__vallian_server.upload();if(u.status==UPLOAD_FILE_START)Update.begin(UPDATE_SIZE_UNKNOWN);else if(u.status==UPLOAD_FILE_WRITE)Update.write(u.buf,u.currentSize);else if(u.status==UPLOAD_FILE_END)Update.end(true);});
+  __vallian_server.begin();
+}
+void setup(){__vallian_ota();user_setup();}
+void loop(){__vallian_server.handleClient();user_loop();}
+'''
+            code=prefix+code+suffix
+          pathlib.Path('.build/custom/custom.ino').write_text(code)
+          pathlib.Path('.build/name.txt').write_text(str(r.get('name','Custom ESP32 Firmware'))[:60])
+          pathlib.Path('.build/libs.txt').write_text('\n'.join(r.get('libraries',[])[:12]))
+          PY
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.arduino15
+          key: arduino-esp32-3.3.11
+
+      - uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP32 core and libraries
+        shell: bash
+        run: |
+          arduino-cli config init || true
+          arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core list | grep -q 'esp32:esp32.*3.3.11' || arduino-cli core install esp32:esp32@3.3.11 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          while IFS= read -r lib; do
+            [ -z "$lib" ] && continue
+            arduino-cli lib install "$lib"
+          done < .build/libs.txt
+
+      - name: Compile and publish
+        id: compile
+        shell: bash
+        run: |
+          set -u
+          mkdir -p site/bins .build/custom/out
+          FAILED=0
+          SHORT_SHA="${GITHUB_SHA::7}"
+          BUILD_ID="custom-${SHORT_SHA}"
+          BIN_NAME="${BUILD_ID}.bin"
+          BUILT_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          DISPLAY_NAME="$(cat .build/name.txt)"
+          if arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --output-dir .build/custom/out .build/custom; then
+            APP_BIN="$(find .build/custom/out -maxdepth 1 -type f -name '*.ino.bin' | head -n 1)"
+            cp "$APP_BIN" "site/bins/$BIN_NAME"
+            SIZE="$(wc -c < "site/bins/$BIN_NAME" | tr -d ' ')"
+            STATUS='ready'; FILE="bins/$BIN_NAME"
+          else
+            SIZE=0; STATUS='failed'; FILE=''; FAILED=1
+          fi
+          python3 - "$BUILD_ID" "$DISPLAY_NAME" "$FILE" "$SIZE" "$GITHUB_SHA" "$BUILT_AT" "$STATUS" <<'PY'
+          import json,pathlib,sys
+          build_id,name,file_name,size,commit,built_at,status=sys.argv[1:]
+          p=pathlib.Path('site/builds.json')
+          try: items=json.loads(p.read_text())
+          except: items=[]
+          items=[x for x in items if x.get('id')!=build_id]
+          items.insert(0,{'id':build_id,'name':name,'file':file_name or None,'size':int(size),'commit':commit,'builtAt':built_at,'status':status,'board':'ESP32 DOIT DevKit V1','source':'Custom Code','ota':True})
+          p.write_text(json.dumps(items[:40],indent=2,ensure_ascii=False)+'\n')
+          PY
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+
+      - name: Commit build history
+        shell: bash
+        run: |
+          git config user.name 'esp32-bin-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add site/builds.json site/bins
+          if ! git diff --cached --quiet; then
+            git commit -m 'build: publish custom ESP32 binary [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CUSTOM-ESP32-BIN
+          path: site/bins/custom-*.bin
+          if-no-files-found: warn
+          retention-days: 30
+
+      - if: steps.compile.outputs.failed == '1'
+        run: exit 1
