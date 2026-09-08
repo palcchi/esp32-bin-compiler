@@ -89,22 +89,27 @@ jobs:
             invert=bool(scene.get('invert',False)); bg=1 if invert else 0; fg=0 if invert else 1
             im=Image.new('1',(128,64),bg); text=str(scene.get('text',''))
             if not text: return im
-            font,items,_=fit_layout(text); n=len(items)
+            if mode in {'words','slidewords','popwords'}:
+              all_words=text.split(); n=len(all_words)
+              visible=n if visible is None else max(0,min(n,visible))
+              count=min(n,visible+(1 if visible<n and active_progress>0 else 0))
+              partial=' '.join(all_words[:count])
+              if not partial:return im
+              font,items,_=fit_layout(partial)
+              for i,item in enumerate(items):
+                is_active=(i==len(items)-1 and visible<n and active_progress>0)
+                if not is_active: draw_word(im,font,item,fg); continue
+                p=max(0,min(1,active_progress))
+                if mode=='slidewords':
+                  q=1-(1-p)**3; draw_word(im,font,item,fg,yoff=round(18*(1-q)))
+                elif mode=='popwords':
+                  c1=1.70158; q=1+(c1+1)*(p-1)**3+c1*(p-1)**2; draw_word(im,font,item,fg,scale=max(.2,.22+.78*q))
+                else: draw_word(im,font,item,fg)
+              return im
+            font,items,_=fit_layout(text)
             if mode=='slide':
               p=max(0,min(1,whole_progress)); q=1-(1-p)**3; off=round(22*(1-q))
               for item in items: draw_word(im,font,item,fg,yoff=off)
-              return im
-            if mode in {'words','slidewords','popwords'}:
-              visible=n if visible is None else max(0,min(n,visible))
-              for i,item in enumerate(items):
-                if i<visible: draw_word(im,font,item,fg)
-              if visible<n and active_progress>0:
-                item=items[visible]; p=max(0,min(1,active_progress))
-                if mode=='words': draw_word(im,font,item,fg)
-                elif mode=='slidewords':
-                  q=1-(1-p)**3; draw_word(im,font,item,fg,yoff=round(18*(1-q)))
-                elif mode=='popwords':
-                  c1=1.70158; q=1+(c1+1)*(p-1)**3+c1*(p-1)**2; draw_word(im,font,item,fg,scale=max(.2,.25+.75*q))
               return im
             for item in items: draw_word(im,font,item,fg)
             return im
@@ -151,7 +156,7 @@ jobs:
           out.append('const uint8_t* const lyric_frames[] = {'+','.join(f'lyric_frame_{i}' for i in range(len(frames)))+'};')
           out.append('const uint32_t lyric_durations[] = {'+','.join(map(str,durations))+'};')
           pathlib.Path('firmware/LyricsFrames.h').write_text('\n'.join(out)+'\n')
-          print(f'Rendered {len(frames)} OLED frames with per-scene animation')
+          print(f'Rendered {len(frames)} OLED frames with recentered word animation')
           PY
 
       - name: Cache Arduino core
