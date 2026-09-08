@@ -33,17 +33,12 @@ jobs:
           python3 <<'PY'
           import json, pathlib
           from PIL import Image, ImageDraw, ImageFont
-
           cfg=json.loads(pathlib.Path('firmware/lyrics.json').read_text())
           scenes=cfg.get('scenes',[])[:200]
           style=cfg.get('style','brat')
           size=max(1,min(3,int(cfg.get('size',2))))
-          font_candidates=[
-            '/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf',
-            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-          ]
-          font_path=next((p for p in font_candidates if pathlib.Path(p).exists()),font_candidates[-1])
-
+          candidates=['/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf','/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf']
+          font_path=next((p for p in candidates if pathlib.Path(p).exists()),candidates[-1])
           def wrap(draw,text,font,maxw):
             words=text.split(); lines=[]; cur=''
             for word in words:
@@ -54,28 +49,21 @@ jobs:
                 cur=word
             if cur: lines.append(cur)
             return lines or ['']
-
           def render(scene):
-            invert=bool(scene.get('invert',False))
-            bg=1 if invert else 0; fg=0 if invert else 1
-            im=Image.new('1',(128,64),bg)
-            draw=ImageDraw.Draw(im)
+            invert=bool(scene.get('invert',False)); bg=1 if invert else 0; fg=0 if invert else 1
+            im=Image.new('1',(128,64),bg); draw=ImageDraw.Draw(im)
             text=str(scene.get('text',''))
             if style=='brat': text=text.lower()
             base={1:15,2:20,3:24}[size] if style=='brat' else {1:11,2:14,3:18}[size]
             for fs in range(base,6,-1):
-              font=ImageFont.truetype(font_path,fs)
-              lines=wrap(draw,text,font,120)
+              font=ImageFont.truetype(font_path,fs); lines=wrap(draw,text,font,120)
               lh=max(7,int(fs*(0.9 if style=='brat' else 1.05)))
               if len(lines)<=4 and len(lines)*lh<=58: break
             y=(64-len(lines)*lh)//2
             for line in lines[:4]:
-              box=draw.textbbox((0,0),line,font=font)
-              w=box[2]-box[0]
-              draw.text(((128-w)//2,y),line,font=font,fill=fg)
-              y+=lh
-            data=[]
-            px=im.load()
+              box=draw.textbbox((0,0),line,font=font); w=box[2]-box[0]
+              draw.text(((128-w)//2,y),line,font=font,fill=fg); y+=lh
+            px=im.load(); data=[]
             for page in range(8):
               for x in range(128):
                 b=0
@@ -83,7 +71,6 @@ jobs:
                   if px[x,page*8+bit]: b|=1<<bit
                 data.append(b)
             return data
-
           frames=[render(s) for s in scenes] or [[0]*1024]
           durations=[max(50,int(s.get('duration',1500))) for s in scenes] or [1000]
           out=['#pragma once','#include <Arduino.h>',f'#define LYRIC_FRAME_COUNT {len(frames)}']
@@ -120,8 +107,6 @@ jobs:
           mkdir -p site/bins .build
           FAILED=0
           SRC='firmware/firmware.ino'
-          BASE='firmware'
-          SAFE='firmware'
           SHORT_SHA="${GITHUB_SHA::7}"
           BUILD_ID="lyrics-${SHORT_SHA}"
           BIN_NAME="${BUILD_ID}.bin"
@@ -164,6 +149,7 @@ jobs:
           git add site/builds.json site/bins
           if ! git diff --cached --quiet; then
             git commit -m 'build: publish OLED lyrics OTA binary [skip ci]'
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
 
