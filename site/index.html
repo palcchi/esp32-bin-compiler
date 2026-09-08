@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0d10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ESP32 BIN" />
+  <title>ESP32 BIN Compiler</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">VALLIAN LAB</p>
+        <h1>ESP32 BIN Compiler</h1>
+      </div>
+      <div id="connectionBadge" class="connection-badge">Checking</div>
+    </header>
+
+    <section class="hero card">
+      <div class="hero-copy">
+        <p class="kicker">AUTO BUILD PIPELINE</p>
+        <h2>.ino masuk. .bin keluar.</h2>
+        <p class="muted">Firmware terbaru di-compile otomatis oleh GitHub Actions dan muncul di sini tanpa ritual merged.bin.</p>
+      </div>
+      <div class="hero-actions">
+        <button id="refreshButton" class="button secondary" type="button">Refresh builds</button>
+        <a class="button ghost" href="http://192.168.4.1" target="_blank" rel="noreferrer">Buka OTA</a>
+      </div>
+    </section>
+
+    <section id="latestSection" class="section hidden">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">LATEST</p>
+          <h2>Firmware terbaru</h2>
+        </div>
+      </div>
+      <div id="latestBuild"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading history-heading">
+        <div>
+          <p class="eyebrow">HISTORY</p>
+          <h2>Semua build</h2>
+        </div>
+        <span id="buildCount" class="count-pill">0</span>
+      </div>
+
+      <div id="emptyState" class="empty card hidden">
+        <p>Belum ada build.</p>
+        <span>Push file .ino ke folder <strong>firmwares</strong>. GitHub yang akan bekerja, karena manusia sudah cukup menderita.</span>
+      </div>
+
+      <div id="buildList" class="build-list"></div>
+    </section>
+
+    <section class="how card">
+      <p class="eyebrow">UPLOAD FLOW</p>
+      <div class="steps">
+        <div><span>1</span><p>Download file <strong>.bin</strong> dari build Ready.</p></div>
+        <div><span>2</span><p>Hubungkan iPad ke Wi-Fi <strong>VALLIAN-ESP32</strong>.</p></div>
+        <div><span>3</span><p>Buka <strong>192.168.4.1</strong> lalu pilih file .bin.</p></div>
+      </div>
+    </section>
+
+    <footer>
+      <span>ESP32 DOIT DevKit V1</span>
+      <span>OTA application binary</span>
+    </footer>
+  </main>
+
+  <template id="buildTemplate">
+    <article class="build-card card">
+      <div class="build-main">
+        <div class="status-dot"></div>
+        <div class="build-copy">
+          <div class="build-title-row">
+            <h3 class="build-name"></h3>
+            <span class="status-label"></span>
+          </div>
+          <p class="build-meta"></p>
+          <div class="chips">
+            <span class="chip board-chip"></span>
+            <span class="chip commit-chip"></span>
+          </div>
+        </div>
+      </div>
+      <div class="build-actions"></div>
+    </article>
+  </template>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
