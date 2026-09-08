@@ -1,0 +1,44 @@
+name: Build ESP32 OTA BIN
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'firmware/**'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP32 core
+        run: |
+          arduino-cli config init
+          arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core install esp32:esp32@3.3.11 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+
+      - name: Compile OTA application
+        run: |
+          mkdir -p build
+          arduino-cli compile \
+            --fqbn esp32:esp32:esp32 \
+            --output-dir build \
+            firmware
+          APP_BIN=$(find build -maxdepth 1 -type f -name '*.ino.bin' | head -n 1)
+          test -n "$APP_BIN"
+          cp "$APP_BIN" build/VALLIAN_ESP32_OTA.bin
+
+      - name: Upload OTA firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: VALLIAN_ESP32_OTA
+          path: build/VALLIAN_ESP32_OTA.bin
+          if-no-files-found: error
+          retention-days: 30
