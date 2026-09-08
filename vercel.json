@@ -1,43 +1,6 @@
 {
-  "outputDirectory": "site",
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "headers": [
-    {
-      "source": "/sw.js",
-      "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]
-    },
-    {
-      "source": "/styles.css",
-      "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]
-    },
-    {
-      "source": "/lyrics.js",
-      "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]
-    },
-    {
-      "source": "/video.js",
-      "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]
-    },
-    {
-      "source": "/builds.js",
-      "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]
-    },
-    {
-      "source": "/",
-      "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]
-    },
-    {
-      "source": "/lyrics",
-      "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]
-    },
-    {
-      "source": "/video",
-      "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]
-    },
-    {
-      "source": "/builds",
-      "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}]
-    }
-  ]
+  "outputDirectory":"site",
+  "cleanUrls":true,
+  "trailingSlash":false,
+  "headers":[{"source":"/(.*)","headers":[{"key":"Cache-Control","value":"no-cache, no-store, must-revalidate"}]}]
 }
