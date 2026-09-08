@@ -1,0 +1,12 @@
+{
+  "name": "ESP32 BIN Compiler",
+  "short_name": "ESP32 BIN",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#0b0d10",
+  "description": "Dashboard build firmware ESP32 OTA untuk Vallian.",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
