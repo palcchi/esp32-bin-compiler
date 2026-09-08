@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "firmware-ba619c9",
+    "name": "Stress Relief V3",
+    "file": "bins/firmware-ba619c9.bin",
+    "size": 949648,
+    "commit": "ba619c932d71dffd9cae4facac2c1b371d6046e1",
+    "builtAt": "2026-09-08T13:41:36Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "firmware/firmware.ino",
+    "ota": true
+  }
+]
