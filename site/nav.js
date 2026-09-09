@@ -1,1 +1,47 @@
-(()=>{if(![...document.styleSheets].some(s=>String(s.href||'').includes('/gameboy.css'))){const l=document.createElement('link');l.rel='stylesheet';l.href='/gameboy.css?v=3';document.head.append(l)}const menu=document.querySelector('.main-menu');if(menu&&!menu.dataset.upgraded){menu.dataset.upgraded='1';const current=location.pathname.replace(/\/$/,'')||'/';const groups=[{label:'Studio',items:[['Home','/'],['Projects','/projects'],['Editor','/editor']]},{label:'Create',items:[['Lyrics','/lyrics'],['Image','/image'],['Pixel Draw','/draw'],['Video','/video'],['Code','/code']]},{label:'Output',items:[['Build History','/builds'],['Presets','/presets']]},{label:'Device',items:[['Devices','/devices'],['OTA Update','http://192.168.4.1']]}];const direct=(label,href)=>`<a class="nav-direct${((href.replace(/\/$/,'')||'/')===current)?' active':''}" href="${href}">${label}</a>`;const html=[direct('Home','/'),...groups.slice(1).map((g,idx)=>{const hasActive=g.items.some(([,href])=>!href.startsWith('http')&&((href.replace(/\/$/,'')||'/')===current));return `<div class="nav-dropdown${hasActive?' active':''}"><button class="nav-trigger" type="button" aria-expanded="false">${g.label}<span>⌄</span></button><div class="nav-panel">${g.items.map(([label,href])=>{const active=!href.startsWith('http')&&((href.replace(/\/$/,'')||'/')===current);return `<a href="${href}"${active?' class="active"':''}>${label}<span>↗</span></a>`}).join('')}</div></div>`}),direct('Projects','/projects'),direct('Editor','/editor')].join('');menu.innerHTML=html;const wrap=document.createElement('div');wrap.className='mobile-nav';wrap.innerHTML='<a class="mobile-brand" href="/"><span>V</span><b>OLED STUDIO</b></a><button class="burger" type="button" aria-label="Buka menu" aria-expanded="false"><i></i><i></i><i></i></button>';menu.parentNode.insertBefore(wrap,menu);const burger=wrap.querySelector('.burger');const closeDropdowns=(except=null)=>menu.querySelectorAll('.nav-dropdown.open').forEach(d=>{if(d!==except){d.classList.remove('open');d.querySelector('.nav-trigger')?.setAttribute('aria-expanded','false')}});menu.querySelectorAll('.nav-trigger').forEach(btn=>btn.onclick=e=>{e.stopPropagation();const d=btn.closest('.nav-dropdown'),open=!d.classList.contains('open');closeDropdowns(d);d.classList.toggle('open',open);btn.setAttribute('aria-expanded',String(open))});burger.onclick=()=>{const open=document.body.classList.toggle('menu-open');burger.setAttribute('aria-expanded',String(open));if(!open)closeDropdowns()};menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{document.body.classList.remove('menu-open');closeDropdowns()}));document.addEventListener('click',e=>{if(!menu.contains(e.target))closeDropdowns()});document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.body.classList.remove('menu-open');closeDropdowns()}})}if(location.pathname==='/'&&matchMedia('(max-width:760px)').matches&&!sessionStorage.getItem('oledIntroSeen')){sessionStorage.setItem('oledIntroSeen','1');const intro=document.createElement('div');intro.className='glitch-intro';intro.innerHTML='<div class="pixel-noise"></div><div class="glitch-copy"><small>VALLIAN LAB // BOOT</small><h1 data-text="OLED STUDIO">OLED STUDIO</h1><p>128×64 CREATIVE SYSTEM</p><div class="boot-line"><i></i></div></div>';document.body.append(intro);setTimeout(()=>intro.classList.add('out'),1850);setTimeout(()=>intro.remove(),2450)}})();
+(()=>{
+  const menu=document.querySelector('.main-menu');
+  if(!menu||menu.dataset.adaptiveNav==='1')return;
+  menu.dataset.adaptiveNav='1';
+  menu.setAttribute('aria-label','Navigasi utama');
+
+  const normalize=value=>{
+    value=String(value||'/').split('?')[0].split('#')[0];
+    value=value.replace(/\/index\.html$/,'/').replace(/\.html$/,'').replace(/\/$/,'');
+    return value||'/';
+  };
+  const current=normalize(location.pathname);
+
+  const tabs=[
+    ['Home','/','⌂'],
+    ['Editor','/editor','✎'],
+    ['Projects','/projects','▣'],
+    ['Builds','/builds','↻'],
+    ['Devices','/devices','◫']
+  ];
+
+  const bar=document.createElement('nav');
+  bar.className='mobile-tabbar';
+  bar.setAttribute('aria-label','Navigasi utama mobile');
+  tabs.forEach(([label,href,icon])=>{
+    const link=document.createElement('a');
+    link.href=href;
+    if(normalize(href)===current)link.className='active';
+    const glyph=document.createElement('span');
+    glyph.setAttribute('aria-hidden','true');
+    glyph.style.fontSize='21px';
+    glyph.style.lineHeight='1';
+    glyph.textContent=icon;
+    const text=document.createElement('span');
+    text.textContent=label;
+    link.append(glyph,text);
+    bar.append(link);
+  });
+  document.body.append(bar);
+
+  let theme=document.querySelector('meta[name="theme-color"]');
+  if(!theme){theme=document.createElement('meta');theme.name='theme-color';document.head.append(theme)}
+  const appearance=matchMedia('(prefers-color-scheme: dark)');
+  const syncTheme=()=>{theme.content=appearance.matches?'#000000':'#f5f5f7'};
+  syncTheme();
+  appearance.addEventListener?.('change',syncTheme);
+})();
