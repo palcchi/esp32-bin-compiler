@@ -1,11 +1,11 @@
 {
-  "name": "ESP32 BIN Compiler",
-  "short_name": "ESP32 BIN",
+  "name": "Vallian OLED Studio",
+  "short_name": "OLED Studio",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#0b0d10",
-  "theme_color": "#0b0d10",
-  "description": "Dashboard build firmware ESP32 OTA untuk Vallian.",
+  "background_color": "#f5f5f7",
+  "theme_color": "#f5f5f7",
+  "description": "Creative OLED workspace dan ESP32 BIN compiler untuk Vallian.",
   "icons": [
     {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
   ]
