@@ -1,64 +1,107 @@
 {
+  "name": "My Lyrics Firmware",
   "style": "brat",
-  "size": 2,
-  "createdAt": "2026-09-08T17:16:24.913Z",
-  "estimatedFrames": 23,
+  "size": 3,
+  "createdAt": "2026-09-09T03:44:24.799Z",
+  "estimatedFrames": 52,
   "scenes": [
     {
-      "text": "Harvey!",
-      "duration": 1500,
-      "invert": true,
+      "text": "Take a look at me",
+      "duration": 2600,
+      "invert": false,
       "animation": "words",
       "order": 0
     },
     {
-      "text": "Nobody knows what i see",
-      "duration": 3300,
-      "invert": true,
+      "text": "Crumpled up on the floor",
+      "duration": 3000,
+      "invert": false,
       "animation": "words",
       "order": 1
     },
     {
-      "text": "Nobody knows i'm waiting",
-      "duration": 3500,
+      "text": "feeling lonely",
+      "duration": 3100,
       "invert": true,
       "animation": "words",
       "order": 2
     },
     {
-      "text": "waiting for you",
+      "text": "Honestly",
       "duration": 1500,
-      "invert": true,
+      "invert": false,
       "animation": "words",
       "order": 3
     },
     {
-      "text": "to call",
-      "duration": 1500,
-      "invert": true,
+      "text": "something is wrong with me",
+      "duration": 3500,
+      "invert": false,
       "animation": "words",
       "order": 4
     },
     {
-      "text": "to call.",
-      "duration": 1000,
+      "text": ".",
+      "duration": 400,
       "invert": true,
-      "animation": "none",
+      "animation": "words",
       "order": 5
     },
     {
-      "text": "to call..",
-      "duration": 1000,
-      "invert": true,
-      "animation": "none",
+      "text": "..",
+      "duration": 400,
+      "invert": false,
+      "animation": "words",
       "order": 6
     },
     {
-      "text": "to call...",
-      "duration": 1000,
+      "text": "...",
+      "duration": 400,
       "invert": true,
-      "animation": "none",
+      "animation": "words",
       "order": 7
+    },
+    {
+      "text": "I've been freaking out",
+      "duration": 2300,
+      "invert": false,
+      "animation": "words",
+      "order": 8
+    },
+    {
+      "text": "Folding myself into",
+      "duration": 3300,
+      "invert": false,
+      "animation": "words",
+      "order": 9
+    },
+    {
+      "text": "origami",
+      "duration": 2500,
+      "invert": true,
+      "animation": "popwords",
+      "order": 10
+    },
+    {
+      "text": "Terrified",
+      "duration": 2000,
+      "invert": false,
+      "animation": "words",
+      "order": 11
+    },
+    {
+      "text": "of what they",
+      "duration": 1200,
+      "invert": false,
+      "animation": "words",
+      "order": 12
+    },
+    {
+      "text": "would think of me",
+      "duration": 3300,
+      "invert": false,
+      "animation": "words",
+      "order": 13
     }
   ]
 }
