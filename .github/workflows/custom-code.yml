@@ -54,7 +54,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          mkdir -p site/bins .build/custom/out
+          mkdir -p site/bins .build/custom/out .build/publish
           arduino-cli compile --fqbn esp32:esp32:esp32doit-devkit-v1 --output-dir .build/custom/out .build/custom 2>&1 | tee .build/compile.log
           RC=${PIPESTATUS[0]}
           echo "exit_code=$RC" >> "$GITHUB_OUTPUT"
@@ -67,8 +67,8 @@ jobs:
 
           if [ "$RC" -eq 0 ]; then
             APP_BIN="$(find .build/custom/out -maxdepth 1 -type f -name '*.ino.bin' | head -n 1)"
-            cp "$APP_BIN" "site/bins/$BIN_NAME"
-            SIZE="$(wc -c < "site/bins/$BIN_NAME" | tr -d ' ')"
+            cp "$APP_BIN" ".build/publish/$BIN_NAME"
+            SIZE="$(wc -c < ".build/publish/$BIN_NAME" | tr -d ' ')"
             STATUS=ready
             FILE="bins/$BIN_NAME"
           else
@@ -80,25 +80,35 @@ jobs:
           python3 - "$BUILD_ID" "$DISPLAY_NAME" "$FILE" "$SIZE" "$GITHUB_SHA" "$BUILT_AT" "$STATUS" <<'PY'
           import json, pathlib, sys
           build_id,name,file_name,size,commit,built_at,status=sys.argv[1:]
-          p=pathlib.Path('site/builds.json')
-          try:
-              items=json.loads(p.read_text())
-          except Exception:
-              items=[]
-          items=[x for x in items if x.get('id')!=build_id]
-          items.insert(0,{'id':build_id,'name':name,'file':file_name or None,'size':int(size),'commit':commit,'builtAt':built_at,'status':status,'board':'ESP32 DOIT DevKit V1','source':'Custom Code','ota':False})
-          p.write_text(json.dumps(items[:40],indent=2,ensure_ascii=False)+'\n')
+          result={'id':build_id,'name':name,'file':file_name or None,'size':int(size),'commit':commit,'builtAt':built_at,'status':status,'board':'ESP32 DOIT DevKit V1','source':'Custom Code','ota':False}
+          pathlib.Path('.build/publish/result.json').write_text(json.dumps(result,ensure_ascii=False))
           PY
 
       - name: Commit result
         if: always()
+        shell: bash
         run: |
           git config user.name 'esp32-bin-bot'
           git config user.email 'actions@users.noreply.github.com'
+          git fetch origin main
+          git reset --hard origin/main
+          mkdir -p site/bins
+          if compgen -G '.build/publish/custom-*.bin' > /dev/null; then
+            cp .build/publish/custom-*.bin site/bins/
+          fi
+          python3 <<'PY'
+          import json, pathlib
+          result=json.loads(pathlib.Path('.build/publish/result.json').read_text())
+          p=pathlib.Path('site/builds.json')
+          try: items=json.loads(p.read_text())
+          except Exception: items=[]
+          items=[x for x in items if x.get('id')!=result['id']]
+          items.insert(0,result)
+          p.write_text(json.dumps(items[:40],indent=2,ensure_ascii=False)+'\n')
+          PY
           git add site/builds.json site/bins
           if ! git diff --cached --quiet; then
             git commit -m 'build: publish custom ESP32 result [skip ci]'
-            git pull --rebase origin main
             git push origin HEAD:main
           fi
 
@@ -116,7 +126,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: CUSTOM-ESP32-BIN
-          path: site/bins/custom-*.bin
+          path: .build/publish/custom-*.bin
           retention-days: 30
 
       - name: Fail if compile failed
