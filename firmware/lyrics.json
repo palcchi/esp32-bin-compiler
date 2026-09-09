@@ -1,22 +1,22 @@
 {
-  "name": "My Lyrics Firmware",
+  "name": "The Rare Occasions - Origami",
   "style": "brat",
-  "size": 3,
-  "createdAt": "2026-09-09T03:44:24.799Z",
-  "estimatedFrames": 52,
+  "size": 2,
+  "createdAt": "2026-09-09T03:45:41.806Z",
+  "estimatedFrames": 21,
   "scenes": [
     {
       "text": "Take a look at me",
       "duration": 2600,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 0
     },
     {
       "text": "Crumpled up on the floor",
       "duration": 3000,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 1
     },
     {
@@ -37,7 +37,7 @@
       "text": "something is wrong with me",
       "duration": 3500,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 4
     },
     {
@@ -51,7 +51,7 @@
       "text": "..",
       "duration": 400,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 6
     },
     {
@@ -65,14 +65,14 @@
       "text": "I've been freaking out",
       "duration": 2300,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 8
     },
     {
       "text": "Folding myself into",
       "duration": 3300,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 9
     },
     {
@@ -86,21 +86,21 @@
       "text": "Terrified",
       "duration": 2000,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 11
     },
     {
       "text": "of what they",
       "duration": 1200,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 12
     },
     {
       "text": "would think of me",
       "duration": 3300,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 13
     }
   ]
