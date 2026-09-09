@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-2c5971c",
+    "name": "repeater ota",
+    "file": null,
+    "size": 0,
+    "commit": "2c5971c71e7675a4d6cbb6ffa2804be47e39a530",
+    "builtAt": "2026-09-09T07:10:38Z",
+    "status": "failed",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": false
+  },
+  {
     "id": "custom-1a65a35",
     "name": "Hotspot OTA",
     "file": "bins/custom-1a65a35.bin",
