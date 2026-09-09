@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-1a65a35",
+    "name": "Hotspot OTA",
+    "file": "bins/custom-1a65a35.bin",
+    "size": 929632,
+    "commit": "1a65a355244bb8970a6c21364536504ca799b36c",
+    "builtAt": "2026-09-09T07:02:15Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": false
+  },
+  {
     "id": "lyrics-e010321",
     "name": "My Lyrics Firmware",
     "file": "bins/lyrics-e010321.bin",
