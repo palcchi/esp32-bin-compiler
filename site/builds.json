@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-c017ade",
+    "name": "Repeater",
+    "file": "bins/custom-c017ade.bin",
+    "size": 927136,
+    "commit": "c017adef068dfa1c66dbbc64c29e195065967eb3",
+    "builtAt": "2026-09-09T07:12:33Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": false
+  },
+  {
     "id": "custom-2c5971c",
     "name": "repeater ota",
     "file": null,
