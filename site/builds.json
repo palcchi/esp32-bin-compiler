@@ -1,5 +1,17 @@
 [
   {
+    "id": "lyrics-e010321",
+    "name": "My Lyrics Firmware",
+    "file": "bins/lyrics-e010321.bin",
+    "size": 1002720,
+    "commit": "e0103210a3a9b42935073a84d9e6c7195045f508",
+    "builtAt": "2026-09-09T03:45:19Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "firmware/firmware.ino",
+    "ota": true
+  },
+  {
     "id": "lyrics-be19d21",
     "name": "OLED Lyrics Build",
     "file": "bins/lyrics-be19d21.bin",
