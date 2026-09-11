@@ -1,10 +1,10 @@
 (()=>{
-  if(window.__vallianAppleShellV10)return;
-  window.__vallianAppleShellV10=true;
+  if(window.__vallianAppleShellV11)return;
+  window.__vallianAppleShellV11=true;
   document.documentElement.classList.add('js-nav-enhanced');
 
   const reduce=matchMedia('(prefers-reduced-motion: reduce)');
-  const studioPaths=new Set(['/projects','/editor','/lyrics','/image','/video','/code']);
+  const studioPaths=new Set(['/device','/projects','/editor','/lyrics','/image','/video','/code']);
   let lastY=scrollY,ticking=false,direction=1;
 
   const normalize=value=>{
@@ -27,13 +27,14 @@
     addStyle('/glass.css?v=5','glassUi');
     addStyle('/apple-motion.css?v=2','appleMotion');
     addStyle('/native-mobile.css?v=1','nativeUi');
-    addStyle('/simple-nav.css?v=2','simpleNavUi');
+    addStyle('/simple-nav.css?v=3','simpleNavUi');
     let theme=document.querySelector('meta[name="theme-color"]');
     if(!theme){theme=document.createElement('meta');theme.name='theme-color';document.head.append(theme)}
     theme.content='#f5f5f7';
   }
 
   const tools=[
+    ['/device','Devices','◈','Hardware composer'],
     ['/editor','Editor','✦','Scene mixer'],
     ['/projects','Projects','▦','Saved work'],
     ['/lyrics','Lyrics','Aa','Text animation'],
