@@ -1,6 +1,6 @@
 (()=>{
-  if(window.__vallianMotionShellV3)return;
-  window.__vallianMotionShellV3=true;
+  if(window.__vallianMotionShellV4)return;
+  window.__vallianMotionShellV4=true;
 
   const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
   const STUDIO=new Set(['/projects','/editor','/lyrics','/image','/draw','/video','/presets']);
@@ -19,6 +19,9 @@
     }
     if(!document.querySelector('link[data-motion-ui]')){
       const l=document.createElement('link');l.rel='stylesheet';l.href='/motion.css?v=3';l.dataset.motionUi='1';document.head.append(l);
+    }
+    if(!document.querySelector('link[data-motion-detail-ui]')){
+      const l=document.createElement('link');l.rel='stylesheet';l.href='/motion-detail.css?v=1';l.dataset.motionDetailUi='1';document.head.append(l);
     }
     document.querySelectorAll('link[href*="gameboy.css"],link[href*="theme-yellow.css"]').forEach(el=>el.remove());
     let theme=document.querySelector('meta[name="theme-color"]');
@@ -90,6 +93,11 @@
     if(!document.querySelector('.motion-glow')){const x=document.createElement('div');x.className='motion-glow';document.body.append(x)}
     if(!document.querySelector('.motion-ambient')){const x=document.createElement('div');x.className='motion-ambient';x.innerHTML='<i></i><i></i>';document.body.append(x)}
     if(!document.querySelector('.motion-progress')){const x=document.createElement('div');x.className='motion-progress';x.innerHTML='<i></i>';document.body.append(x)}
+    if(!document.querySelector('.motion-sculpture')){
+      const x=document.createElement('div');x.className='motion-sculpture';x.setAttribute('aria-hidden','true');
+      x.innerHTML='<i class="motion-line line-a"></i><i class="motion-line line-b"></i><i class="motion-line line-c"></i><b class="motion-ring"></b><span class="motion-node"></span>';
+      document.body.append(x);
+    }
   }
 
   let observer;
@@ -103,6 +111,13 @@
     return observer;
   }
 
+  function selectIncludingRoot(root,selector){
+    const out=[];
+    if(root.nodeType===1&&root.matches?.(selector))out.push(root);
+    root.querySelectorAll?.(selector).forEach(el=>out.push(el));
+    return out;
+  }
+
   function splitTitle(el){
     if(!el||el.dataset.motionSplit)return;
     el.dataset.motionSplit='1';
@@ -114,18 +129,19 @@
   }
 
   const mark=(selector,kind,root=document)=>{
-    root.querySelectorAll(selector).forEach((el,i)=>{
+    selectIncludingRoot(root,selector).forEach((el,i)=>{
       if(el.dataset.motion)return;
-      el.dataset.motion=kind;el.style.setProperty('--motion-delay',Math.min(i%7,6)*30+'ms');getObserver().observe(el);
+      el.dataset.motion=kind;el.style.setProperty('--motion-delay',Math.min(i%8,7)*34+'ms');getObserver().observe(el);
     });
   };
 
   function animateEverything(root=document){
-    root.querySelectorAll('.home-hero h1,.page-intro h1,.page-head h1,.section-title h2,.section-heading h2,.editor-title h2,.preview-head h2').forEach(splitTitle);
+    selectIncludingRoot(root,'h1,h2').forEach(splitTitle);
     mark('.home-hero,.feature,.card,.studio,.build-card,.empty,.lyric-editor,.code-card,.scene-panel,.preview-card,.mini-oled,.latest-build,.build-list>*,.projects-grid>*','box',root);
     mark('.home-section,.page-intro,.page-head,.section-title,.section-heading,.editor-title,.preview-head,footer,.hero-meta,.feature-grid,.lyrics-workspace,.studio-grid,.build-section','section',root);
     mark('.settings-grid>*,.control-row>*,.code-grid>*,.studio-actions>*,.hero-actions>*,.editor-hints>*,.scene-row,.build-actions>*,.button,.page-badge,.connection-badge,.count-pill,.pill,.chip,.tool-badge','control',root);
     mark('canvas,video,.mini-screen,.preview-screen,.oled-preview,.oled-stage','media',root);
+    mark('h3,h4,p,.brand small,.brand strong,.feature-link,.eyebrow,.muted,.description,.hint,.note,footer span','text',root);
   }
 
   function connection(){
@@ -161,12 +177,12 @@
       setTimeout(go,115);
       setTimeout(go,300);
     });
-    addEventListener('pageshow',()=>{document.body.classList.remove('route-leaving');document.body.classList.add('page-entering');setTimeout(()=>document.body.classList.remove('page-entering'),720)});
+    addEventListener('pageshow',()=>{document.body.classList.remove('route-leaving');document.body.classList.add('page-entering');setTimeout(()=>document.body.classList.remove('page-entering'),820)});
   }
 
   function init(){
     ensureStyles();buildDesktopNav();buildMobileNav();ambient();animateEverything();connection();updateScroll(true);tapFeedback();nativeNavigation();
-    document.body.classList.add('page-entering');setTimeout(()=>document.body.classList.remove('page-entering'),720);
+    document.body.classList.add('page-entering');setTimeout(()=>document.body.classList.remove('page-entering'),820);
   }
 
   addEventListener('online',connection);addEventListener('offline',connection);
@@ -174,7 +190,7 @@
   addEventListener('scroll',()=>{if(scrollTick)return;scrollTick=true;requestAnimationFrame(()=>{scrollTick=false;updateScroll()})},{passive:true});
   addEventListener('keydown',e=>{if(e.key!=='Escape')return;document.querySelector('.nav-cluster.open')?.classList.remove('open');document.querySelector('.mobile-studio-sheet.open')?.classList.remove('open');document.querySelector('.mobile-studio-backdrop.open')?.classList.remove('open');document.querySelector('.create-tab')?.setAttribute('aria-expanded','false');document.body.classList.remove('studio-open')});
 
-  const mutation=new MutationObserver(records=>{for(const record of records)for(const node of record.addedNodes)if(node.nodeType===1&&!node.matches?.('.motion-glow,.motion-ambient,.motion-progress,.mobile-tabbar,.mobile-studio-sheet,.mobile-studio-backdrop,.tap-ripple'))animateEverything(node)});
+  const mutation=new MutationObserver(records=>{for(const record of records)for(const node of record.addedNodes)if(node.nodeType===1&&!node.matches?.('.motion-glow,.motion-ambient,.motion-progress,.motion-sculpture,.mobile-tabbar,.mobile-studio-sheet,.mobile-studio-backdrop,.tap-ripple'))animateEverything(node)});
   mutation.observe(document.body,{childList:true,subtree:true});
 
   init();
