@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-ddbc171",
+    "name": "Tugas #1",
+    "file": "bins/custom-ddbc171.bin",
+    "size": 911984,
+    "commit": "ddbc17142c1d6c670e5e8ea60d179ccdbe589649",
+    "builtAt": "2026-09-11T20:05:26Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": false
+  },
+  {
     "id": "custom-a8f4caa",
     "name": "Tugas #1",
     "file": "bins/custom-a8f4caa.bin",
