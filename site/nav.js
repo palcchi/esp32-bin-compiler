@@ -1,6 +1,6 @@
 (()=>{
-  if(window.__vallianAppleShellV6)return;
-  window.__vallianAppleShellV6=true;
+  if(window.__vallianAppleShellV7)return;
+  window.__vallianAppleShellV7=true;
 
   const reduce=matchMedia('(prefers-reduced-motion: reduce)');
   const studioPaths=new Set(['/projects','/editor','/lyrics','/image','/video']);
@@ -11,8 +11,8 @@
 
   function ensureStyle(){
     document.querySelectorAll('link[data-sunday-ui],link[data-glass-ui],link[data-apple-motion],link[href*="sunday.css"],link[href*="gameboy.css"],link[href*="theme-yellow.css"],link[href*="motion-detail.css"],link[href*="motion.css"]').forEach(el=>el.remove());
-    const glass=document.createElement('link');glass.rel='stylesheet';glass.href='/glass.css?v=4';glass.dataset.glassUi='1';document.head.append(glass);
-    const motion=document.createElement('link');motion.rel='stylesheet';motion.href='/apple-motion.css?v=1';motion.dataset.appleMotion='1';document.head.append(motion);
+    const glass=document.createElement('link');glass.rel='stylesheet';glass.href='/glass.css?v=5';glass.dataset.glassUi='1';document.head.append(glass);
+    const motion=document.createElement('link');motion.rel='stylesheet';motion.href='/apple-motion.css?v=2';motion.dataset.appleMotion='1';document.head.append(motion);
     let theme=document.querySelector('meta[name="theme-color"]');if(!theme){theme=document.createElement('meta');theme.name='theme-color';document.head.append(theme)}theme.content='#f5f5f7';
   }
 
