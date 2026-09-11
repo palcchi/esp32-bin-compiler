@@ -20,13 +20,14 @@
 
   function ensureStyle(){
     document.querySelectorAll([
-      'link[data-sunday-ui]','link[data-glass-ui]','link[data-apple-motion]','link[data-native-ui]',
+      'link[data-sunday-ui]','link[data-glass-ui]','link[data-apple-motion]','link[data-native-ui]','link[data-simple-nav-ui]',
       'link[href*="sunday.css"]','link[href*="gameboy.css"]','link[href*="theme-yellow.css"]',
       'link[href*="motion-detail.css"]','link[href*="motion.css"]'
     ].join(',')).forEach(el=>el.remove());
     addStyle('/glass.css?v=5','glassUi');
     addStyle('/apple-motion.css?v=2','appleMotion');
     addStyle('/native-mobile.css?v=1','nativeUi');
+    addStyle('/simple-nav.css?v=1','simpleNavUi');
     let theme=document.querySelector('meta[name="theme-color"]');
     if(!theme){theme=document.createElement('meta');theme.name='theme-color';document.head.append(theme)}
     theme.content='#f5f5f7';
