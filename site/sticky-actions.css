@@ -1,16 +1,12 @@
-/* Shared mobile action bar. Sits above the bottom navigation so core actions are always reachable. */
+/* Shared mobile action bar V2. Compact and always above the native bottom nav. */
 .mobile-actionbar{display:none}
+.universal-build-status{display:grid;gap:3px;margin-top:10px;padding:10px 12px;border-radius:13px;background:rgba(242,242,247,.82);border:1px solid rgba(60,60,67,.07)}.universal-build-status strong{font-size:11px}.universal-build-status span{color:#7d7d82;font-size:9px;line-height:1.4}.universal-build-status.busy strong{color:#8a6100}.universal-build-status.good strong{color:#248a3d}.universal-build-status.bad strong{color:#d70015}.universal-build-status a{color:inherit;font-weight:700}
 @media(max-width:760px){
-  body.has-mobile-actionbar{padding-bottom:calc(154px + env(safe-area-inset-bottom))!important}
-  body.has-mobile-actionbar .shell{padding-bottom:calc(164px + env(safe-area-inset-bottom))!important}
-  .mobile-actionbar{position:fixed;z-index:188;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(80px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(var(--action-count,3),minmax(0,1fr));gap:5px;padding:5px;border:1px solid rgba(60,60,67,.10);border-radius:20px;background:rgba(248,248,250,.84);-webkit-backdrop-filter:blur(20px) saturate(145%);backdrop-filter:blur(20px) saturate(145%);box-shadow:0 14px 36px rgba(20,20,24,.13),inset 0 1px 0 rgba(255,255,255,.88)}
-  .mobile-actionbar button,.mobile-actionbar a{min-width:0;min-height:46px;margin:0;padding:0 9px;border:0;border-radius:15px;background:transparent;color:#5f5f64;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;font:700 10px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:none!important}
-  .mobile-actionbar .mobile-action-primary{background:#1d1d1f;color:#fff}
-  .mobile-actionbar .mobile-action-secondary{background:rgba(255,255,255,.78);color:#333337;border:1px solid rgba(60,60,67,.07)}
-  .mobile-actionbar .mobile-action-accent{background:linear-gradient(145deg,#f7d85d,#f2ca2f);color:#242428}
-  .mobile-actionbar button:disabled{opacity:.38;pointer-events:none}
-  .mobile-actionbar .action-icon{font-size:13px;line-height:1}
-  body.studio-open .mobile-actionbar{opacity:0;pointer-events:none;transform:translateY(8px)}
+  body.has-mobile-actionbar{padding-bottom:calc(126px + env(safe-area-inset-bottom))!important}
+  body.has-mobile-actionbar .shell{padding-bottom:calc(136px + env(safe-area-inset-bottom))!important}
+  .mobile-actionbar{position:fixed;z-index:188;left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));bottom:calc(65px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(var(--action-count,3),minmax(0,1fr));gap:4px;padding:4px;border:1px solid rgba(60,60,67,.09);border-radius:17px;background:rgba(248,248,250,.90);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);box-shadow:0 10px 28px rgba(20,20,24,.10),inset 0 1px 0 rgba(255,255,255,.90)}
+  .mobile-actionbar button,.mobile-actionbar a{min-width:0;min-height:42px;margin:0;padding:0 7px;border:0;border-radius:12px;background:transparent;color:#5f5f64;display:flex;align-items:center;justify-content:center;gap:5px;text-decoration:none;font:700 9px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:none!important}
+  .mobile-actionbar .mobile-action-primary{background:#1d1d1f;color:#fff}.mobile-actionbar .mobile-action-secondary{background:rgba(255,255,255,.80);color:#333337;border:1px solid rgba(60,60,67,.06)}.mobile-actionbar .mobile-action-accent{background:linear-gradient(145deg,#f7d85d,#f2ca2f);color:#242428}.mobile-actionbar button:disabled{opacity:.38;pointer-events:none}.mobile-actionbar .action-icon{font-size:12px;line-height:1}.mobile-actionbar .hidden{display:none!important}body.studio-open .mobile-actionbar{opacity:0;pointer-events:none;transform:translateY(6px)}
 }
-@media(max-width:360px){.mobile-actionbar{left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));gap:4px;padding:4px}.mobile-actionbar button,.mobile-actionbar a{min-height:44px;padding:0 6px;font-size:9px}}
-@media(prefers-reduced-motion:no-preference){.mobile-actionbar{transition:opacity .2s ease,transform .2s ease}}
+@media(max-width:360px){.mobile-actionbar{left:max(7px,env(safe-area-inset-left));right:max(7px,env(safe-area-inset-right));gap:3px;padding:3px}.mobile-actionbar button,.mobile-actionbar a{min-height:40px;padding:0 5px;font-size:8px}}
+@media(prefers-reduced-motion:no-preference){.mobile-actionbar{transition:opacity .18s ease,transform .18s ease}}
