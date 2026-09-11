@@ -4,26 +4,18 @@
   *{box-sizing:border-box}
   .shell{width:100%!important;max-width:100%!important;padding-left:10px!important;padding-right:10px!important;padding-bottom:calc(132px + env(safe-area-inset-bottom))!important}
   .site-header{margin-left:-10px!important;margin-right:-10px!important;padding-left:max(12px,env(safe-area-inset-left))!important;padding-right:max(12px,env(safe-area-inset-right))!important;min-width:0!important}
-  .site-header>*{min-width:0}
-  .brand{min-width:0;max-width:72%}.brand strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .site-header>*{min-width:0}.brand{min-width:0;max-width:72%}.brand strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .card,.studio,.lyric-editor,.preview-card,.scene-panel,.code-card,.device-toolbar{max-width:100%!important;min-width:0!important}
-  .page-intro,.page-head{margin-left:2px!important;margin-right:2px!important}
-  .page-intro h1,.page-head h1{overflow-wrap:anywhere}
-  .studio-actions,.build-actions{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(112px,1fr))!important}
-  .studio-actions>* ,.build-actions>*{width:100%!important;min-width:0!important}
-  .composer-tabs{left:0!important;right:0!important;top:62px!important;width:100%!important;max-width:100%!important;margin-left:0!important;margin-right:0!important;padding:4px!important;gap:3px!important;overflow-x:auto!important;scroll-snap-type:x proximity}
-  .composer-tab{flex:1 0 auto!important;min-width:70px!important;min-height:38px!important;padding:0 9px!important;font-size:10px!important;scroll-snap-align:center}
-  .beginner-steps{margin-left:0!important;margin-right:0!important;max-width:100%!important;overflow-x:auto!important}
-  .beginner-step{min-width:138px!important;min-height:76px!important}
-  .beginner-step b{padding-right:22px}
-  .logic-panel .panel-head,.simulator .panel-head{align-items:flex-start!important}
-  .logic-panel .panel-head h2,.simulator .panel-head h2{font-size:28px!important;line-height:1!important}
-  .logic-panel .panel-head .button{min-height:40px!important;width:auto!important;padding:0 14px!important}
-  .visual-scroll,.sim-hardware-map{max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch}
-  .visual-scroll svg,.sim-hardware-map svg{height:auto!important}
-  .device-toolbar .toolbar-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  .device-toolbar .toolbar-actions>*{min-width:0!important}
-  .controls{grid-template-columns:1fr!important}
-  .build-name-field{display:block;min-width:0}
-  .build-name-field input{width:100%}
+  .page-intro,.page-head{margin-left:2px!important;margin-right:2px!important}.page-intro h1,.page-head h1{overflow-wrap:anywhere}
+  .studio-actions,.build-actions{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(112px,1fr))!important}.studio-actions>* ,.build-actions>*{width:100%!important;min-width:0!important}
+  .composer-tabs{left:0!important;right:0!important;top:62px!important;width:100%!important;max-width:100%!important;margin-left:0!important;margin-right:0!important;padding:4px!important;gap:3px!important;overflow-x:auto!important;scroll-snap-type:x proximity}.composer-tab{flex:1 0 auto!important;min-width:70px!important;min-height:38px!important;padding:0 9px!important;font-size:10px!important;scroll-snap-align:center}
+  .beginner-steps{margin-left:0!important;margin-right:0!important;max-width:100%!important;overflow-x:auto!important}.beginner-step{min-width:138px!important;min-height:76px!important}.beginner-step b{padding-right:22px}
+  .logic-panel .panel-head,.simulator .panel-head{align-items:flex-start!important}.logic-panel .panel-head h2,.simulator .panel-head h2{font-size:28px!important;line-height:1!important}.logic-panel .panel-head .button{min-height:40px!important;width:auto!important;padding:0 14px!important}
+  .visual-scroll,.sim-hardware-map,.pinmap-v2,.circuit-v2,.sim-circuit-wrap{max-width:100%!important;overflow:hidden!important;-webkit-overflow-scrolling:touch}.visual-scroll svg,.sim-hardware-map svg,.pinmap-v2 svg,.circuit-v2 svg,.sim-circuit-wrap svg{width:100%!important;min-width:0!important;height:auto!important}
+  .board-visual{min-height:0!important;display:block!important}.wiring-board{overflow:hidden!important}.wiring-mode-tabs{width:100%!important;max-width:100%!important;overflow-x:auto!important}.wiring-guide-card{max-width:100%!important}
+  .device-toolbar .toolbar-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}.device-toolbar .toolbar-actions>*{min-width:0!important}
+  .device-help-strip{max-width:100%!important}.selected-component,.component-item,.preset-card{min-width:0!important}
+  .simulation-grid,.composer-grid,.wiring-grid,.composer-code-shell{width:100%!important;max-width:100%!important;min-width:0!important}
+  .simulator,.sim-device,.sim-hardware-map{min-width:0!important;max-width:100%!important}.simulator .panel-head{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}.sim-head-actions{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr 86px!important}.sim-head-actions>*{min-width:0!important}
+  .controls{grid-template-columns:1fr!important}.build-name-field{display:block;min-width:0}.build-name-field input{width:100%}
 }
