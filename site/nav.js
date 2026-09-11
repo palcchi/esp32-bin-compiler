@@ -1,6 +1,6 @@
 (()=>{
-  if(window.__vallianAppleShellV9)return;
-  window.__vallianAppleShellV9=true;
+  if(window.__vallianAppleShellV10)return;
+  window.__vallianAppleShellV10=true;
   document.documentElement.classList.add('js-nav-enhanced');
 
   const reduce=matchMedia('(prefers-reduced-motion: reduce)');
@@ -27,7 +27,7 @@
     addStyle('/glass.css?v=5','glassUi');
     addStyle('/apple-motion.css?v=2','appleMotion');
     addStyle('/native-mobile.css?v=1','nativeUi');
-    addStyle('/simple-nav.css?v=1','simpleNavUi');
+    addStyle('/simple-nav.css?v=2','simpleNavUi');
     let theme=document.querySelector('meta[name="theme-color"]');
     if(!theme){theme=document.createElement('meta');theme.name='theme-color';document.head.append(theme)}
     theme.content='#f5f5f7';
