@@ -1,4 +1,12 @@
 (()=>{
+  if(!document.querySelector('link[data-glass-ui]')){
+    const glass=document.createElement('link');
+    glass.rel='stylesheet';
+    glass.href='/glass.css?v=1';
+    glass.dataset.glassUi='1';
+    document.head.append(glass);
+  }
+
   const menu=document.querySelector('.main-menu');
   if(!menu||menu.dataset.adaptiveNav==='1')return;
   menu.dataset.adaptiveNav='1';
@@ -39,9 +47,10 @@
   document.body.append(bar);
 
   let theme=document.querySelector('meta[name="theme-color"]');
-  if(!theme){theme=document.createElement('meta');theme.name='theme-color';document.head.append(theme)}
-  const appearance=matchMedia('(prefers-color-scheme: dark)');
-  const syncTheme=()=>{theme.content=appearance.matches?'#000000':'#f5f5f7'};
-  syncTheme();
-  appearance.addEventListener?.('change',syncTheme);
+  if(!theme){
+    theme=document.createElement('meta');
+    theme.name='theme-color';
+    document.head.append(theme);
+  }
+  theme.content='#f4f4f6';
 })();
