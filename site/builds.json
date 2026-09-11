@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-a8f4caa",
+    "name": "Tugas #1",
+    "file": "bins/custom-a8f4caa.bin",
+    "size": 257808,
+    "commit": "a8f4caa203ba04579e53d22856b34f186f17f74a",
+    "builtAt": "2026-09-11T07:09:18Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": false
+  },
+  {
     "id": "custom-c017ade",
     "name": "Repeater",
     "file": "bins/custom-c017ade.bin",
