@@ -52,6 +52,7 @@ function ensureSimulationUI(){
  sim.dataset.enhanced='1';
  const head=sim.querySelector('.panel-head'),run=$('#runSimulation');
  if(head&&run){
+   run.onclick=null;
    const actions=document.createElement('div');actions.className='sim-head-actions';
    const step=document.createElement('button');step.id='stepSimulation';step.className='button secondary';step.type='button';step.textContent='Step';
    const speed=document.createElement('select');speed.id='simSpeed';speed.className='sim-speed';speed.setAttribute('aria-label','Simulation speed');speed.innerHTML='<option value="950">Slow</option><option value="620" selected>Normal</option><option value="360">Fast</option>';
