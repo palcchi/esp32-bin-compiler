@@ -1,0 +1,84 @@
+/* Readability pass for animated dashboard previews. Keep color in the glow, not in the text. */
+.tool-card-copy,.tool-card-head,.card-demo{isolation:isolate}
+.tool-card h3,.tool-card-copy h3{color:#1d1d1f!important;text-shadow:none!important}
+.tool-card p,.tool-card-copy p{color:#67676c!important}
+.tool-label{
+  color:#55555a!important;
+  background:rgba(255,255,255,.82)!important;
+  border-color:rgba(60,60,67,.10)!important;
+  -webkit-backdrop-filter:blur(3px)!important;
+  backdrop-filter:blur(3px)!important;
+}
+.tool-arrow{color:#2c2c2f!important;background:rgba(255,255,255,.84)!important}
+.card-demo{color:#1d1d1f!important}
+.card-demo span,.card-demo b,.card-demo em,.card-demo strong{position:relative;z-index:2}
+
+.demo-editor .screen{background:linear-gradient(145deg,#1f1f22,#09090a)!important}
+.demo-editor .screen span{
+  color:#fff!important;
+  font-weight:760!important;
+  text-shadow:0 1px 10px rgba(0,0,0,.24)!important;
+}
+
+.project-stack i:nth-child(3){
+  color:#2a2a2e!important;
+  background:rgba(255,255,255,.94)!important;
+  font-weight:760!important;
+}
+
+.demo-lyrics{
+  background:linear-gradient(145deg,#222226,#0b0b0d)!important;
+}
+.demo-lyrics span{
+  color:#fff!important;
+  font-weight:760!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.36)!important;
+}
+
+.demo-code{background:linear-gradient(145deg,#222226,#111113)!important}
+.demo-code i{background:#46464c!important}
+.compile-badge{
+  color:#fff!important;
+  background:rgba(0,0,0,.34)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:999px!important;
+  padding:5px 8px!important;
+  font-weight:760!important;
+  text-shadow:0 1px 8px rgba(0,0,0,.35)!important;
+}
+
+.demo-build-row{
+  background:rgba(255,255,255,.88)!important;
+  color:#5f5f64!important;
+  border:1px solid rgba(60,60,67,.06)!important;
+}
+.demo-build-row b{color:#202024!important;font-weight:720!important}
+.demo-build-row span{color:#646469!important;opacity:1!important;font-weight:700!important}
+
+.hero-live-screen span{color:#fff!important;text-shadow:0 2px 14px rgba(0,0,0,.28)!important}
+.hero-live-bottom strong{color:#252529!important}
+.hero-live-bottom span{color:#69696e!important}
+
+@media(max-width:760px){
+  .tool-card h3{font-size:22px!important;color:#1d1d1f!important}
+  .tool-label{
+    min-height:25px!important;
+    padding:5px 8px!important;
+    font-size:8px!important;
+    letter-spacing:.065em!important;
+    color:#4f4f54!important;
+  }
+  .tool-arrow{font-size:14px!important}
+  .demo-editor .screen span{font-size:10px!important}
+  .project-stack i:nth-child(3){font-size:9px!important}
+  .demo-lyrics span{font-size:16px!important;letter-spacing:-.035em!important}
+  .compile-badge{font-size:8px!important;right:8px!important;bottom:8px!important;padding:4px 7px!important}
+  .demo-build-row b{font-size:9px!important}
+  .latest-main h3,.device-card h3{color:#1d1d1f!important}
+}
+
+@media(max-width:390px){
+  .tool-card h3{font-size:20px!important}
+  .tool-label{font-size:7.5px!important}
+  .demo-lyrics span{font-size:15px!important}
+}
