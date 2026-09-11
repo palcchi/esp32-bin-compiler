@@ -1,0 +1,16 @@
+/* Shared mobile action bar. Sits above the bottom navigation so core actions are always reachable. */
+.mobile-actionbar{display:none}
+@media(max-width:760px){
+  body.has-mobile-actionbar{padding-bottom:calc(154px + env(safe-area-inset-bottom))!important}
+  body.has-mobile-actionbar .shell{padding-bottom:calc(164px + env(safe-area-inset-bottom))!important}
+  .mobile-actionbar{position:fixed;z-index:188;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(80px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(var(--action-count,3),minmax(0,1fr));gap:5px;padding:5px;border:1px solid rgba(60,60,67,.10);border-radius:20px;background:rgba(248,248,250,.84);-webkit-backdrop-filter:blur(20px) saturate(145%);backdrop-filter:blur(20px) saturate(145%);box-shadow:0 14px 36px rgba(20,20,24,.13),inset 0 1px 0 rgba(255,255,255,.88)}
+  .mobile-actionbar button,.mobile-actionbar a{min-width:0;min-height:46px;margin:0;padding:0 9px;border:0;border-radius:15px;background:transparent;color:#5f5f64;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;font:700 10px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:none!important}
+  .mobile-actionbar .mobile-action-primary{background:#1d1d1f;color:#fff}
+  .mobile-actionbar .mobile-action-secondary{background:rgba(255,255,255,.78);color:#333337;border:1px solid rgba(60,60,67,.07)}
+  .mobile-actionbar .mobile-action-accent{background:linear-gradient(145deg,#f7d85d,#f2ca2f);color:#242428}
+  .mobile-actionbar button:disabled{opacity:.38;pointer-events:none}
+  .mobile-actionbar .action-icon{font-size:13px;line-height:1}
+  body.studio-open .mobile-actionbar{opacity:0;pointer-events:none;transform:translateY(8px)}
+}
+@media(max-width:360px){.mobile-actionbar{left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));gap:4px;padding:4px}.mobile-actionbar button,.mobile-actionbar a{min-height:44px;padding:0 6px;font-size:9px}}
+@media(prefers-reduced-motion:no-preference){.mobile-actionbar{transition:opacity .2s ease,transform .2s ease}}
