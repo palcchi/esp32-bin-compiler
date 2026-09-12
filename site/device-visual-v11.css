@@ -1,18 +1,18 @@
 /* Device visual V11: richer technical part illustrations and clearer physical anchors. */
 #breadboardCanvasV7.v9-active{background:linear-gradient(180deg,#eceef1,#e5e7ea)!important}
-.v9-active .esp-v9{filter:drop-shadow(0 8px 12px rgba(20,20,24,.16))}
-.v9-active .part-v9{filter:drop-shadow(0 5px 8px rgba(20,20,24,.10));transition:opacity .22s ease,filter .22s ease}
+.v9-active .esp-v9{filter:drop-shadow(0 8px 12px rgba(20,20,24,.16));transform-box:fill-box;transform-origin:center}
+.v9-active .part-v9{filter:drop-shadow(0 5px 8px rgba(20,20,24,.10));transition:opacity .22s ease,filter .22s ease;transform-box:fill-box;transform-origin:center}
 .v9-active .part-v9:hover{filter:drop-shadow(0 8px 13px rgba(20,20,24,.16))}
 .v9-active .part-pin-v9{fill:#fff!important;stroke-width:2.2!important;filter:drop-shadow(0 1px 1px rgba(0,0,0,.12))}
 .v9-active .part-pin-label-v9{font-size:5.7px!important;font-weight:900!important;fill:#343438!important;paint-order:stroke;stroke:#fff;stroke-width:2.4px;stroke-linejoin:round}
 .v9-active .part-name-v9{font-size:7.4px!important;font-weight:900!important;fill:#252529!important;paint-order:stroke;stroke:#f4f4f6;stroke-width:2.8px}
-.v11-detail-overlay{pointer-events:none}
+.v11-detail-overlay{pointer-events:none}.esp-v11-overlay{opacity:.96}
 .v11-detail-overlay .silk{fill:#fff;fill-opacity:.78;font:800 5px/1 system-ui,-apple-system,sans-serif;letter-spacing:.04em}
 .v11-detail-overlay .silk-dark{fill:#33333a;font:800 5px/1 system-ui,-apple-system,sans-serif}
 .v11-detail-overlay .metal{fill:#d7d9dd;stroke:#9da1a8;stroke-width:.8}
 .v11-detail-overlay .hole{fill:#25252a;stroke:#d8d8dc;stroke-width:1}
 .v11-detail-overlay .trace{fill:none;stroke:#fff;stroke-opacity:.28;stroke-width:1}
-.v11-support-part{pointer-events:none;filter:drop-shadow(0 3px 4px rgba(20,20,24,.10))}
+.v11-support-part{pointer-events:none;filter:drop-shadow(0 3px 4px rgba(20,20,24,.10));transform-box:fill-box;transform-origin:center}
 .v11-support-part text{font:900 5.2px/1 system-ui,-apple-system,sans-serif;fill:#45454a;paint-order:stroke;stroke:#fff;stroke-width:2px}
 .v11-resistor-body{fill:#d7bd88;stroke:#9b8054;stroke-width:1}.v11-resistor-band{stroke-width:2}
 .v11-cap-body{fill:#202b45;stroke:#101726;stroke-width:1}.v11-transistor{fill:#202126;stroke:#08090b;stroke-width:1}
