@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-f97495a",
+    "name": "Tugas #1 Fix",
+    "file": "bins/custom-f97495a.bin",
+    "size": 915168,
+    "commit": "f97495ab20b494d8d9cdf01f7fffade0e788c700",
+    "builtAt": "2026-09-12T16:06:39Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": true
+  },
+  {
     "id": "custom-1635853",
     "name": "Tugas #1 Fix",
     "file": "bins/custom-1635853.bin",
