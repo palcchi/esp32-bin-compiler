@@ -1,0 +1,28 @@
+/* Home desktop refinement: stable card composition and a compiler preview that stays visually centered. */
+@media (min-width: 900px){
+  .home-shell{width:min(1320px,100%)!important}
+  .home-hero-v2{grid-template-columns:minmax(0,1.08fr) minmax(360px,.72fr)!important;min-height:500px!important;padding:56px 60px!important}
+  .hero-live-card{min-height:300px!important}
+  .tool-grid{gap:18px!important}
+  .tool-card{min-height:330px!important;padding:24px!important}
+  .tool-card.featured{min-height:410px!important;padding-bottom:218px!important}
+  .tool-card.featured .card-demo{position:absolute!important;left:24px!important;right:24px!important;bottom:24px!important;height:166px!important;margin:0!important}
+  .tool-card.featured .tool-card-copy{max-width:72%}
+  .demo-code{display:grid!important;grid-template-columns:minmax(0,1fr) 118px!important;gap:16px!important;align-items:center!important;padding:22px!important;background:linear-gradient(145deg,#171719,#101012)!important}
+  .demo-code:before{content:"BUILD PIPELINE";position:absolute;left:20px;top:13px;color:#7f7f86;font-size:8px;font-weight:850;letter-spacing:.12em}
+  .demo-code .code-lines{align-self:center!important;margin-top:10px!important;gap:10px!important}
+  .demo-code i{height:8px!important;background:#3b3b40!important}
+  .demo-code i:after{box-shadow:0 0 18px rgba(var(--accent-rgb),.32)}
+  .compile-badge{position:static!important;display:grid!important;place-items:center!important;justify-self:stretch!important;align-self:stretch!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:18px!important;background:rgba(255,255,255,.045)!important;color:#d4d4d8!important;font-size:9px!important;letter-spacing:.08em!important;text-align:center!important}
+  .compile-badge:before{display:block!important;width:9px!important;height:9px!important;margin:0 0 8px!important;box-shadow:0 0 0 8px rgba(52,199,89,.08)!important}
+  .dashboard-section{padding-top:86px!important}
+  .dashboard-heading{margin-bottom:26px!important}
+  .latest-strip{gap:18px!important}
+}
+@media (min-width: 1180px){
+  .tool-card{grid-column:span 4!important}
+  .tool-card.featured{grid-column:span 6!important}
+}
+@media (min-width: 900px) and (max-width: 1179px){
+  .tool-card,.tool-card.featured{grid-column:span 6!important}
+}
