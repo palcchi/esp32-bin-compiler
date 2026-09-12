@@ -64,6 +64,7 @@ jobs:
           BIN_NAME="${BUILD_ID}.bin"
           BUILT_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           DISPLAY_NAME="$(cat .build/name.txt)"
+          OTA="$(cat .build/ota.txt 2>/dev/null || echo false)"
 
           if [ "$RC" -eq 0 ]; then
             APP_BIN="$(find .build/custom/out -maxdepth 1 -type f -name '*.ino.bin' | head -n 1)"
@@ -77,10 +78,10 @@ jobs:
             FILE=''
           fi
 
-          python3 - "$BUILD_ID" "$DISPLAY_NAME" "$FILE" "$SIZE" "$GITHUB_SHA" "$BUILT_AT" "$STATUS" <<'PY'
+          python3 - "$BUILD_ID" "$DISPLAY_NAME" "$FILE" "$SIZE" "$GITHUB_SHA" "$BUILT_AT" "$STATUS" "$OTA" <<'PY'
           import json, pathlib, sys
-          build_id,name,file_name,size,commit,built_at,status=sys.argv[1:]
-          result={'id':build_id,'name':name,'file':file_name or None,'size':int(size),'commit':commit,'builtAt':built_at,'status':status,'board':'ESP32 DOIT DevKit V1','source':'Custom Code','ota':False}
+          build_id,name,file_name,size,commit,built_at,status,ota=sys.argv[1:]
+          result={'id':build_id,'name':name,'file':file_name or None,'size':int(size),'commit':commit,'builtAt':built_at,'status':status,'board':'ESP32 DOIT DevKit V1','source':'Custom Code','ota':ota.strip().lower()=='true'}
           pathlib.Path('.build/publish/result.json').write_text(json.dumps(result,ensure_ascii=False))
           PY
 
