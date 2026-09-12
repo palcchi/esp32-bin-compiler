@@ -1,6 +1,5 @@
-@import url('/desktop-v3.css?v=1');
-/* Desktop/iPad layout polish. Keeps the current visual language, fixes wide-layout alignment and overflow. */
-@media (min-width: 900px){
+/* Desktop/iPad baseline. */
+@media (min-width:900px){
   html,body{overflow-x:hidden}
   .shell{width:min(1260px,100%)!important;padding-left:32px!important;padding-right:32px!important}
   .site-header{min-height:54px;margin-bottom:14px}
@@ -9,12 +8,12 @@
   .page-intro h1,.page-head h1{max-width:14ch}
   .card,.studio,.build-card,.empty{min-width:0}
   .lyrics-workspace,.code-shell,.composer-code-shell,.simulation-grid{align-items:start}
-  .lyrics-workspace>* ,.code-shell>* ,.composer-code-shell>* ,.simulation-grid>*{min-width:0}
+  .lyrics-workspace>*,.code-shell>*,.composer-code-shell>*,.simulation-grid>*{min-width:0}
   .settings-grid,.control-row,.code-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
   .scene-row,.wire-row,.logic-rule,.selected-component{min-width:0}
   textarea,input,select{max-width:100%}
 }
-@media (min-width: 1180px){
+@media (min-width:1180px){
   .shell{width:min(1320px,100%)!important;padding-left:38px!important;padding-right:38px!important}
   .page-intro,.page-head{margin-top:60px}
   .card,.studio,.build-card{border-radius:24px}
@@ -23,9 +22,47 @@
   .composer-code-shell{grid-template-columns:minmax(0,1.45fr) minmax(310px,.55fr)!important;gap:22px!important}
   .simulation-grid{grid-template-columns:minmax(0,1.45fr) minmax(300px,.55fr)!important;gap:22px!important}
 }
-@media (min-width: 768px) and (max-width: 1100px){
+@media (min-width:768px) and (max-width:1100px){
   .shell{padding-left:24px!important;padding-right:24px!important}
   .tool-grid,.preset-grid,.component-library{min-width:0}
   .composer-tabs,.wiring-hub-tabs{max-width:100%;overflow-x:auto;scrollbar-width:none}
   .composer-tabs::-webkit-scrollbar,.wiring-hub-tabs::-webkit-scrollbar{display:none}
+}
+/* V3 final overrides. These intentionally come last. */
+@media (min-width:900px){
+  .shell{width:min(1340px,100%)!important;padding-left:36px!important;padding-right:36px!important}
+  .main-menu.motion-nav{max-width:calc(100vw - 72px)!important}
+  .page-intro,.page-head{max-width:940px!important;margin-top:54px!important;margin-bottom:34px!important}
+  .device-app{width:min(1420px,100%)!important}
+  .device-toolbar{display:grid!important;grid-template-columns:minmax(260px,.65fr) minmax(0,1.35fr)!important;align-items:end!important;gap:22px!important;padding:20px 22px!important}
+  .device-toolbar .toolbar-actions{display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:9px!important;flex-wrap:wrap!important}
+  .beginner-steps{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:10px!important;overflow:visible!important}
+  .beginner-step{min-width:0!important;min-height:106px!important;padding:15px!important;text-align:left!important}
+  .composer-tabs{width:max-content!important;max-width:100%!important;margin:18px auto 22px!important}
+  .compose-stack{display:grid!important;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr)!important;gap:18px!important;align-items:start!important}
+  .compose-stack>.library-panel{grid-column:1/-1!important}
+  .wiring-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:22px!important}
+  .wiring-hub-tabs{justify-self:end!important;max-width:100%!important}
+  .wiring-canvas-card{overflow:hidden!important}
+  .wiring-v7-canvas{width:100%!important;min-width:0!important;max-width:100%!important}
+  .simulation-grid{grid-template-columns:minmax(0,1.42fr) minmax(300px,.58fr)!important;gap:20px!important;align-items:start!important}
+  .composer-code-shell{grid-template-columns:minmax(0,1.45fr) minmax(310px,.55fr)!important;gap:22px!important;align-items:start!important}
+  .lyrics-workspace{grid-template-columns:minmax(0,1.42fr) minmax(340px,.58fr)!important;gap:24px!important;align-items:start!important}
+  .code-shell{grid-template-columns:minmax(0,1.4fr) minmax(320px,.6fr)!important;gap:24px!important;align-items:start!important}
+  .selected-components,.component-library,.preset-grid-v2,.tool-grid,.dashboard-section{min-width:0!important}
+  .tool-grid{grid-auto-flow:row dense!important;align-items:stretch!important}
+  .tool-card{min-width:0!important}
+}
+@media (min-width:1180px){.shell{width:min(1380px,100%)!important;padding-left:42px!important;padding-right:42px!important}.device-app{width:min(1460px,100%)!important}.card,.studio,.build-card{border-radius:25px!important}}
+@media (min-width:768px) and (max-width:1099px){
+  .shell{width:100%!important;padding-left:24px!important;padding-right:24px!important}
+  .page-intro,.page-head{margin-top:42px!important}
+  .beginner-steps{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;overflow:visible!important}
+  .beginner-step:last-child{grid-column:1/-1!important}
+  .compose-stack,.device-toolbar,.wiring-toolbar,.simulation-grid,.composer-code-shell,.lyrics-workspace,.code-shell{display:grid!important;grid-template-columns:1fr!important}
+  .device-toolbar .toolbar-actions{justify-content:flex-start!important}
+  .composer-tabs,.wiring-hub-tabs{max-width:100%!important;overflow-x:auto!important;scrollbar-width:none!important}
+  .wiring-hub-tabs{justify-self:start!important}
+  .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .tool-card,.tool-card.featured{grid-column:auto!important;min-width:0!important}
 }
