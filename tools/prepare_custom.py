@@ -19,6 +19,7 @@ if preserve_ota:
         code = loop_pat.sub('void userLoop()', code, count=1)
     else:
         code += '\nvoid userLoop(){}\n'
+
     ota = r'''
 
 #include <WiFi.h>
@@ -26,12 +27,33 @@ if preserve_ota:
 #include <Update.h>
 
 WebServer __vallianOtaServer(80);
+TaskHandle_t __vallianOtaTaskHandle = nullptr;
+
+void __vallianOtaTask(void* parameter) {
+  for (;;) {
+    __vallianOtaServer.handleClient();
+    vTaskDelay(pdMS_TO_TICKS(2));
+  }
+}
 
 void __vallianOtaSetup(){
+  WiFi.persistent(false);
   WiFi.mode(WIFI_AP);
-  WiFi.softAP("VALLIAN-ESP32", "12345678");
+  WiFi.setSleep(false);
+  delay(100);
+
+  // Always expose a local recovery/update AP. No router is required.
+  bool apStarted = WiFi.softAP("VALLIAN-ESP32", "12345678", 1, false, 4);
+  if (!apStarted) {
+    WiFi.mode(WIFI_OFF);
+    delay(100);
+    WiFi.mode(WIFI_AP);
+    delay(100);
+    WiFi.softAP("VALLIAN-ESP32", "12345678", 1, false, 4);
+  }
+
   __vallianOtaServer.on("/", HTTP_GET, [](){
-    __vallianOtaServer.send(200, "text/html", "<meta name='viewport' content='width=device-width'><h2>VALLIAN ESP32 OTA</h2><form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update' accept='.bin'><button>Upload firmware</button></form>");
+    __vallianOtaServer.send(200, "text/html", "<meta name='viewport' content='width=device-width'><h2>VALLIAN ESP32 OTA</h2><p>AP: VALLIAN-ESP32</p><form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update' accept='.bin'><button>Upload firmware</button></form>");
   });
   __vallianOtaServer.on("/update", HTTP_POST, [](){
     bool ok = !Update.hasError();
@@ -49,16 +71,29 @@ void __vallianOtaSetup(){
     }
   });
   __vallianOtaServer.begin();
+
+  // Run OTA independently so delays/blocking code in the user's loop cannot
+  // make the update page unresponsive.
+  xTaskCreatePinnedToCore(
+    __vallianOtaTask,
+    "vallian-ota",
+    4096,
+    nullptr,
+    1,
+    &__vallianOtaTaskHandle,
+    0
+  );
 }
 
 void setup(){
-  userSetup();
+  // Bring recovery Wi-Fi up before user code. Even a slow user setup will not
+  // remove the OTA path unless that code explicitly reconfigures Wi-Fi.
   __vallianOtaSetup();
+  userSetup();
 }
 
 void loop(){
   userLoop();
-  __vallianOtaServer.handleClient();
 }
 '''
     code += ota
