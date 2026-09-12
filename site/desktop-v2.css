@@ -1,0 +1,30 @@
+/* Desktop/iPad layout polish. Keeps the current visual language, fixes wide-layout alignment and overflow. */
+@media (min-width: 900px){
+  html,body{overflow-x:hidden}
+  .shell{width:min(1260px,100%)!important;padding-left:32px!important;padding-right:32px!important}
+  .site-header{min-height:54px;margin-bottom:14px}
+  .main-menu.motion-nav{margin-left:auto!important;margin-right:auto!important}
+  .page-intro,.page-head{max-width:920px;margin-top:52px;margin-bottom:34px}
+  .page-intro h1,.page-head h1{max-width:14ch}
+  .card,.studio,.build-card,.empty{min-width:0}
+  .lyrics-workspace,.code-shell,.composer-code-shell,.simulation-grid{align-items:start}
+  .lyrics-workspace>* ,.code-shell>* ,.composer-code-shell>* ,.simulation-grid>*{min-width:0}
+  .settings-grid,.control-row,.code-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .scene-row,.wire-row,.logic-rule,.selected-component{min-width:0}
+  textarea,input,select{max-width:100%}
+}
+@media (min-width: 1180px){
+  .shell{width:min(1320px,100%)!important;padding-left:38px!important;padding-right:38px!important}
+  .page-intro,.page-head{margin-top:60px}
+  .card,.studio,.build-card{border-radius:24px}
+  .lyrics-workspace{grid-template-columns:minmax(0,1.42fr) minmax(340px,.58fr)!important;gap:24px!important}
+  .code-shell{grid-template-columns:minmax(0,1.42fr) minmax(330px,.58fr)!important;gap:24px!important}
+  .composer-code-shell{grid-template-columns:minmax(0,1.45fr) minmax(310px,.55fr)!important;gap:22px!important}
+  .simulation-grid{grid-template-columns:minmax(0,1.45fr) minmax(300px,.55fr)!important;gap:22px!important}
+}
+@media (min-width: 768px) and (max-width: 1100px){
+  .shell{padding-left:24px!important;padding-right:24px!important}
+  .tool-grid,.preset-grid,.component-library{min-width:0}
+  .composer-tabs,.wiring-hub-tabs{max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .composer-tabs::-webkit-scrollbar,.wiring-hub-tabs::-webkit-scrollbar{display:none}
+}
