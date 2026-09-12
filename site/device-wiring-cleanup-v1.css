@@ -1,0 +1,9 @@
+#breadboardCanvasV7 .wiring-clean-v1 .wire-separator-v9{stroke:#ececef!important;stroke-width:7!important;stroke-linecap:round;stroke-linejoin:round;opacity:.96}
+#breadboardCanvasV7 .wiring-clean-v1 .wire-v9{stroke-linecap:round;stroke-linejoin:round}
+#breadboardCanvasV7 .wiring-clean-v1 .wire-signal-v9{stroke-width:2.7!important}
+#breadboardCanvasV7 .wiring-clean-v1 .wire-power-v9{stroke-width:2.4!important}
+#breadboardCanvasV7 .wiring-clean-v1 .board-zone-v9>text{paint-order:stroke;stroke:#fff;stroke-width:2px;pointer-events:none}
+#breadboardCanvasV7 .wiring-clean-v1 .esp-v9{filter:drop-shadow(0 8px 14px rgba(15,15,20,.18));pointer-events:none}
+#breadboardCanvasV7.dragging .wire-group-v9{opacity:.22!important;transition:opacity .12s ease}
+#breadboardCanvasV7.dragging .part-v9:not(.dragging){opacity:.64;transition:opacity .12s ease}
+@media(max-width:760px){#breadboardCanvasV7 .wiring-clean-v1 .wire-separator-v9{stroke-width:6!important}#breadboardCanvasV7 .wiring-clean-v1 .wire-signal-v9{stroke-width:2.5!important}}
