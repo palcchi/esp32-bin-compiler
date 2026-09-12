@@ -1,3 +1,4 @@
+@import url('/desktop-v3.css?v=1');
 /* Desktop/iPad layout polish. Keeps the current visual language, fixes wide-layout alignment and overflow. */
 @media (min-width: 900px){
   html,body{overflow-x:hidden}
