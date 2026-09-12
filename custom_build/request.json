@@ -1,7 +1,7 @@
 {
-  "name": "Tugas #1",
-  "code": "// Judul: Kendali Aktuator Digital Menggunakan ESP32\n// dengan LED, Buzzer, dan Relay 1 Channel\n// Kelompok 2 (Vallian) (Reyhan)\n\n#define LED_PIN 2\n#define BUZZER_PIN 4\n#define RELAY_PIN 5\n\nvoid setup() {\n  pinMode(LED_PIN, OUTPUT);\n  pinMode(BUZZER_PIN, OUTPUT);\n  pinMode(RELAY_PIN, OUTPUT);\n}\n\nvoid loop() {\n  // Semua ON\n  digitalWrite(LED_PIN, HIGH);\n  digitalWrite(BUZZER_PIN, HIGH);\n  digitalWrite(RELAY_PIN, HIGH);\n\n  delay(2000);\n\n  // Semua OFF\n  digitalWrite(LED_PIN, LOW);\n  digitalWrite(BUZZER_PIN, LOW);\n  digitalWrite(RELAY_PIN, LOW);\n\n  delay(2000);\n}",
+  "name": "Tugas #1 Fix",
+  "code": "// Judul: Kendali Aktuator Digital Menggunakan ESP32\n// dengan LED dan Buzzer\n// Kelompok 2\n// Anggota: Vallian, Ahmad Reyhan\n\n#define LED_PIN 2\n#define BUZZER_PIN 4\n\nvoid setup() {\n  pinMode(LED_PIN, OUTPUT);\n  pinMode(BUZZER_PIN, OUTPUT);\n}\n\nvoid loop() {\n  // Semua ON\n  digitalWrite(LED_PIN, HIGH);\n  digitalWrite(BUZZER_PIN, HIGH);\n\n  delay(2000);\n\n  // Semua OFF\n  digitalWrite(LED_PIN, LOW);\n  digitalWrite(BUZZER_PIN, LOW);\n\n  delay(2000);\n}",
   "preserveOta": true,
   "libraries": [],
-  "createdAt": "2026-09-11T07:08:02.625Z"
+  "createdAt": "2026-09-12T06:47:46.514Z"
 }
