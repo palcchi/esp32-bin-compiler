@@ -1,0 +1,12 @@
+/* Subtle pixel accents: precision cues, not retro cosplay. */
+:root{--px-ink:rgba(29,29,31,.16);--px-soft:rgba(29,29,31,.045);--px-accent:#f5cf3b}
+.card,.tool-card,.device-card,.latest-card,.wiring-canvas-card,.preset-compact-v4,.simulator,.code-card{position:relative}
+.card::after,.tool-card::after,.wiring-canvas-card::after{content:"";position:absolute;right:12px;top:12px;width:3px;height:3px;background:var(--px-ink);box-shadow:6px 0 0 var(--px-soft),0 6px 0 var(--px-soft);pointer-events:none;opacity:.5}
+.button,.composer-tab,.wiring-hub-tab,.category-chip,.preset-load-v4{position:relative}
+.button:focus-visible,.composer-tab:focus-visible,.wiring-hub-tab:focus-visible{outline:2px solid rgba(245,207,59,.45);outline-offset:2px;box-shadow:3px 3px 0 rgba(29,29,31,.08)}
+.button:active,.composer-tab:active,.wiring-hub-tab:active{transform:translate(1px,1px)}
+.eyebrow,.tool-label,.page-badge,.status-label{font-variant-numeric:tabular-nums}
+.pixel-surface{background-image:linear-gradient(90deg,var(--px-soft) 1px,transparent 1px),linear-gradient(var(--px-soft) 1px,transparent 1px);background-size:8px 8px}
+.pixel-chip{display:inline-flex;align-items:center;gap:6px}.pixel-chip::before{content:"";width:4px;height:4px;background:currentColor;box-shadow:4px 0 0 color-mix(in srgb,currentColor 45%,transparent),0 4px 0 color-mix(in srgb,currentColor 45%,transparent)}
+@media(max-width:760px){.card::after,.tool-card::after,.wiring-canvas-card::after{right:10px;top:10px;opacity:.38}.button:active,.composer-tab:active,.wiring-hub-tab:active{transform:none}}
+@media(prefers-reduced-motion:reduce){.button:active,.composer-tab:active,.wiring-hub-tab:active{transform:none}}
