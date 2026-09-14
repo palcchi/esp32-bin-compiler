@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-8bae486",
+    "name": "ipah",
+    "file": "bins/custom-8bae486.bin",
+    "size": 917136,
+    "commit": "8bae48648c9198245eefe12a38d32ddb2e7a15f9",
+    "builtAt": "2026-09-14T07:28:27Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": true
+  },
+  {
     "id": "custom-cd7639f",
     "name": "Custom rapi",
     "file": "bins/custom-cd7639f.bin",
