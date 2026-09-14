@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-cd7639f",
+    "name": "Custom rapi",
+    "file": "bins/custom-cd7639f.bin",
+    "size": 917136,
+    "commit": "cd7639f2dd77af070af371d5dfe56bc099770bda",
+    "builtAt": "2026-09-14T07:25:15Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": true
+  },
+  {
     "id": "custom-9651e22",
     "name": "Rapi",
     "file": "bins/custom-9651e22.bin",
