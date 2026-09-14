@@ -6,7 +6,13 @@ This project reuses selected open-source visual assets/component renderers and s
 - Repository: `wokwi/wokwi-elements`
 - License: MIT
 - Copyright: Uri Shaked
-- Use in this project: electronic component Web Components, SVG/vector presentation, and physical `pinInfo` metadata where available.
+- Use in this project: electronic component Web Components, SVG/vector presentation, and physical `pinInfo` metadata where available. Device Composer V21 uses the native Wokwi ESP32 DevKit V1 vector and uses native Wokwi component vectors whenever an exact matching element exists.
+
+## Anime.js
+- Repository: `juliangarnier/anime`
+- License: MIT
+- Version used by Device Composer: 4.5.0
+- Use in this project: Device Composer view transitions, control feedback, hardware entrance motion, animated wire drawing, guided wiring, and simulation-flow motion. CSS remains responsible for layout and static appearance rather than page animation.
 
 ## OpenHW Studio Frontend
 - Repository: `OpenHW-Studio/OpenHW-studio-frontend`
