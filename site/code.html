@@ -1,4 +1,52 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f5f5f7"><title>Compiler · Vallian OLED</title><link rel="stylesheet" href="/styles.css?v=10"><link rel="stylesheet" href="/sticky-actions.css?v=2"><style>.code-shell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:18px;align-items:start}.code-card{padding:24px}.code-card textarea{width:100%;min-height:620px;resize:vertical;background:#101012!important;color:#f5f5f7!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:18px!important;padding:18px;font:13px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;outline:none}.code-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.code-grid input{width:100%;margin-top:7px}.ota-option{display:flex;align-items:center;justify-content:space-between;gap:12px}.ota-config-link{display:inline-flex;color:#6a5500;font-size:10px;font-weight:800;text-decoration:none}.ota-build-profile{margin-top:10px;padding:14px;border:1px solid rgba(60,60,67,.09);border-radius:18px;background:rgba(250,250,252,.8)}.ota-build-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.ota-build-head b{font-size:12px}.ota-build-head small{display:block;margin-top:2px;color:#85858a;font-size:9px}.ota-profile-grid{display:grid;grid-template-columns:.8fr 1fr 1fr;gap:8px}.ota-profile-grid label{font-size:9px;font-weight:800;color:#666}.ota-profile-grid select,.ota-profile-grid input{width:100%;min-height:42px;margin-top:6px;padding:0 11px;border:1px solid rgba(60,60,67,.12);border-radius:12px;background:#fff;color:#1d1d1f;font-size:13px}.ota-profile-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}.ota-profile-actions button{min-height:34px;padding:0 11px;border:1px solid rgba(60,60,67,.1);border-radius:11px;background:#fff;font-size:10px;font-weight:800}.ota-profile-note{color:#8a8a90;font-size:9px}.code-side{display:grid;gap:12px;position:sticky;top:86px}.code-info,.code-status{padding:20px}.code-info h2{margin:0 0 6px;font-size:19px}.code-info p,.code-status p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.45}.code-download{display:block;margin-top:12px}@media(max-width:900px){.code-shell{grid-template-columns:1fr}.code-side{position:static}.code-card textarea{min-height:520px}}@media(max-width:620px){.code-card{padding:18px}.code-card textarea{min-height:440px}.code-grid,.ota-profile-grid{grid-template-columns:1fr}.ota-build-head,.ota-profile-actions{align-items:flex-start;flex-direction:column}}</style></head><body><main class="shell"><header class="site-header"><a class="brand" href="/"><span class="brand-mark">V</span><span><small>VALLIAN LAB</small><strong>Compiler</strong></span></a><span class="page-badge">BIN</span></header><nav class="main-menu"></nav><header class="page-intro"><div><p class="eyebrow">ARDUINO → BIN</p><h1>Compiler</h1><p>Paste. Build. Flash.</p></div></header><section class="code-shell"><div class="card code-card"><textarea id="code" spellcheck="false">void setup() {
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f7">
+<title>Compiler · Vallian OLED</title>
+<link rel="stylesheet" href="/styles.css?v=10">
+<link rel="stylesheet" href="/sticky-actions.css?v=2">
+<style>
+.code-shell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:18px;align-items:start}.code-card{padding:24px}.code-card textarea{width:100%;min-height:620px;resize:vertical;background:#101012!important;color:#f5f5f7!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:18px!important;padding:18px;font:13px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;outline:none}.code-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.code-grid input{width:100%;margin-top:7px}.ota-option{display:flex;align-items:center;justify-content:space-between;gap:12px}.active-profile-card{margin-top:10px;padding:13px 14px;border:1px solid rgba(60,60,67,.09);border-radius:18px;background:rgba(250,250,252,.82);display:flex;align-items:center;justify-content:space-between;gap:12px}.active-profile-card small{display:block;color:#85858a;font-size:9px;margin-bottom:3px}.active-profile-card strong{display:block;font-size:12px}.active-profile-card span{display:block;margin-top:2px;color:#76767c;font-size:10px}.active-profile-card button{min-height:34px;padding:0 12px;border:1px solid rgba(60,60,67,.1);border-radius:11px;background:#fff;font-size:10px;font-weight:800}.code-side{display:grid;gap:12px;position:sticky;top:86px}.code-info,.code-status{padding:20px}.code-info h2{margin:0 0 6px;font-size:19px}.code-info p,.code-status p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.45}.code-download{display:block;margin-top:12px}
+.profile-gate{position:fixed;z-index:9999;inset:0;display:grid;place-items:center;padding:20px;background:rgba(245,245,247,.86);-webkit-backdrop-filter:blur(28px) saturate(135%);backdrop-filter:blur(28px) saturate(135%);transition:opacity .28s ease,visibility .28s ease}.profile-gate.hidden{opacity:0;visibility:hidden;pointer-events:none}.profile-login{width:min(100%,460px);border:1px solid rgba(255,255,255,.94);border-radius:30px;background:rgba(255,255,255,.86);box-shadow:0 28px 80px rgba(20,20,24,.14),inset 0 1px 0 #fff;padding:24px}.profile-brand{display:flex;align-items:center;gap:11px;margin-bottom:22px}.profile-brand .brand-mark{flex:0 0 auto}.profile-brand small{display:block;color:#98989d;font-size:8px;letter-spacing:.12em;font-weight:800}.profile-brand strong{display:block;margin-top:2px;font-size:14px}.profile-login .eyebrow{margin-bottom:8px!important}.profile-login h1{margin:0;font-size:36px;line-height:.98;letter-spacing:-.055em}.profile-login>p{margin:10px 0 18px;color:#77777c;font-size:12px;line-height:1.45}.profile-fields{display:grid;gap:9px}.profile-field{display:grid;gap:6px}.profile-field>span{font-size:9px;font-weight:850;color:#68686d}.profile-field input,.profile-field select{width:100%;min-height:48px;padding:0 13px;border:1px solid rgba(60,60,67,.12);border-radius:14px;background:#fff;color:#1d1d1f;font-size:16px;outline:none}.profile-field input:focus,.profile-field select:focus{border-color:rgba(138,97,0,.32);box-shadow:0 0 0 4px rgba(245,207,59,.17)}.profile-actions{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:14px}.profile-actions button{min-height:48px;border-radius:14px;border:1px solid rgba(60,60,67,.1);font-size:13px;font-weight:850}.profile-enter{background:#1d1d1f;color:#fff}.profile-add-toggle{background:#fff;color:#1d1d1f;padding:0 15px}.profile-error{min-height:18px;margin-top:8px;color:#d70015;font-size:10px;font-weight:750}.new-profile{display:none;margin-top:15px;padding-top:15px;border-top:1px solid rgba(60,60,67,.09)}.new-profile.open{display:block}.new-profile h2{margin:0 0 10px;font-size:17px;letter-spacing:-.03em}.new-profile-grid{display:grid;gap:8px}.new-profile-actions{display:flex;gap:8px;margin-top:11px}.new-profile-actions button{min-height:42px;padding:0 13px;border-radius:12px;border:1px solid rgba(60,60,67,.1);background:#fff;font-size:11px;font-weight:850}.new-profile-actions .create{background:#f5cf3b}.profile-note{margin-top:14px;padding:10px 11px;border-radius:13px;background:#f5f5f7;color:#85858a;font-size:9px;line-height:1.45}
+@media(max-width:900px){.code-shell{grid-template-columns:1fr}.code-side{position:static}.code-card textarea{min-height:520px}}
+@media(max-width:620px){.code-card{padding:18px}.code-card textarea{min-height:440px}.code-grid{grid-template-columns:1fr}.active-profile-card{align-items:flex-start;flex-direction:column}.profile-gate{padding:10px}.profile-login{padding:19px;border-radius:25px}.profile-login h1{font-size:31px}.profile-actions{grid-template-columns:1fr}.profile-actions button{width:100%}}
+</style>
+</head>
+<body>
+<div id="otaProfileGate" class="profile-gate" role="dialog" aria-modal="true" aria-labelledby="profileGateTitle">
+  <section class="profile-login">
+    <div class="profile-brand"><span class="brand-mark">V</span><span><small>VALLIAN LAB</small><strong>ESP32 Compiler</strong></span></div>
+    <p class="eyebrow">OTA PROFILE</p>
+    <h1 id="profileGateTitle">Choose your device.</h1>
+    <p>Pilih profile OTA lalu masuk memakai SSID dan password profile tersebut.</p>
+    <div class="profile-fields">
+      <label class="profile-field"><span>PROFILE</span><select id="loginOtaProfile"></select></label>
+      <label class="profile-field"><span>SSID</span><input id="loginOtaSsid" maxlength="32" autocomplete="username" placeholder="VALLIAN-ESP32"></label>
+      <label class="profile-field"><span>PASSWORD</span><input id="loginOtaPassword" type="password" maxlength="63" autocomplete="current-password" placeholder="OTA password"></label>
+    </div>
+    <div class="profile-actions"><button id="enterOtaProfile" class="profile-enter" type="button">Enter Compiler</button><button id="toggleNewOtaProfile" class="profile-add-toggle" type="button">+ New profile</button></div>
+    <div id="profileLoginError" class="profile-error" aria-live="polite"></div>
+    <div id="newOtaProfile" class="new-profile">
+      <h2>Add OTA profile</h2>
+      <div class="new-profile-grid">
+        <label class="profile-field"><span>PROFILE NAME</span><input id="newOtaProfileName" maxlength="32" placeholder="My ESP32"></label>
+        <label class="profile-field"><span>SSID</span><input id="newOtaSsid" maxlength="32" autocomplete="off" placeholder="ESP32-OTA"></label>
+        <label class="profile-field"><span>PASSWORD</span><input id="newOtaPassword" type="password" minlength="8" maxlength="63" autocomplete="new-password" placeholder="Minimum 8 characters"></label>
+      </div>
+      <div class="new-profile-actions"><button id="createOtaProfile" class="create" type="button">Add & enter</button><button id="cancelNewOtaProfile" type="button">Cancel</button></div>
+    </div>
+    <div class="profile-note">Profile disimpan lokal di browser ini. Password dipakai untuk konfigurasi AP OTA firmware, bukan akun cloud.</div>
+  </section>
+</div>
+<main class="shell">
+<header class="site-header"><a class="brand" href="/"><span class="brand-mark">V</span><span><small>VALLIAN LAB</small><strong>Compiler</strong></span></a><span class="page-badge">BIN</span></header>
+<nav class="main-menu"></nav>
+<header class="page-intro"><div><p class="eyebrow">ARDUINO → BIN</p><h1>Compiler</h1><p>Paste. Build. Flash.</p></div></header>
+<section class="code-shell">
+  <div class="card code-card">
+    <textarea id="code" spellcheck="false">void setup() {
   Serial.begin(115200);
   pinMode(2, OUTPUT);
 }
@@ -9,4 +57,18 @@ void loop() {
   digitalWrite(2, LOW);
   delay(500);
 }
-</textarea><div class="code-grid"><label>Build name<input id="buildName" value="Custom ESP32 Firmware" maxlength="60"></label><label>Libraries<input id="libraries" placeholder="Optional"></label></div><label class="ota-option"><span><b>Preserve OTA</b><br><small>Keep local OTA · 192.168.4.1 after flashing</small></span><input id="preserveOta" type="checkbox" checked></label><div class="ota-build-profile" id="otaBuildProfile"><div class="ota-build-head"><div><b>OTA Wi‑Fi profile</b><small>Pilih konfigurasi yang ikut masuk ke BIN ini.</small></div><a class="ota-config-link" href="/ota">OTA settings →</a></div><div class="ota-profile-grid"><label>Profile<select id="otaProfileChoice"><option value="saved">Saved profile</option><option value="default">Default</option><option value="custom">Custom this build</option></select></label><label>SSID<input id="codeOtaSsid" maxlength="32" autocomplete="off" placeholder="VALLIAN-ESP32"></label><label>Password<input id="codeOtaPassword" type="password" minlength="8" maxlength="63" autocomplete="new-password" placeholder="Minimum 8 characters"></label></div><div class="ota-profile-actions"><button id="saveCodeOtaProfile" type="button">Save as profile</button><span id="codeOtaProfileNote" class="ota-profile-note"></span></div></div><div class="studio-actions"><button id="buildCode" class="button download">Build .BIN</button><a class="button ghost" href="/builds">History</a></div></div><aside class="code-side"><div class="card code-info"><p class="eyebrow">TARGET</p><h2>ESP32 DevKit V1</h2><p>Application BIN · optional OTA wrapper</p></div><div id="statusBox" class="card code-status hidden"><strong id="statusTitle">Preparing...</strong><p id="statusText"></p><a id="downloadBin" class="button download code-download hidden">Download .BIN</a></div></aside></section></main><script src="/ota-runtime.js?v=1"></script><script src="/code.js?v=2"></script><script src="/sticky-actions.js?v=2"></script><script src="/nav.js?v=18"></script></body></html>
+</textarea>
+    <div class="code-grid"><label>Build name<input id="buildName" value="Custom ESP32 Firmware" maxlength="60"></label><label>Libraries<input id="libraries" placeholder="Optional"></label></div>
+    <label class="ota-option"><span><b>Preserve OTA</b><br><small>Keep local OTA · 192.168.4.1 after flashing</small></span><input id="preserveOta" type="checkbox" checked></label>
+    <div class="active-profile-card"><div><small>ACTIVE OTA PROFILE</small><strong id="activeOtaProfileName">Default</strong><span id="activeOtaProfileSsid">VALLIAN-ESP32</span></div><button id="switchOtaProfile" type="button">Switch profile</button></div>
+    <div class="studio-actions"><button id="buildCode" class="button download">Build .BIN</button><a class="button ghost" href="/builds">History</a></div>
+  </div>
+  <aside class="code-side"><div class="card code-info"><p class="eyebrow">TARGET</p><h2>ESP32 DevKit V1</h2><p>Application BIN · optional OTA wrapper</p></div><div id="statusBox" class="card code-status hidden"><strong id="statusTitle">Preparing...</strong><p id="statusText"></p><a id="downloadBin" class="button download code-download hidden">Download .BIN</a></div></aside>
+</section>
+</main>
+<script src="/ota-runtime.js?v=2"></script>
+<script src="/code.js?v=3"></script>
+<script src="/sticky-actions.js?v=2"></script>
+<script src="/nav.js?v=18"></script>
+</body>
+</html>
