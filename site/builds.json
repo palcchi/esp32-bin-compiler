@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-f60b3f5",
+    "name": "kuis",
+    "file": "bins/custom-f60b3f5.bin",
+    "size": 927072,
+    "commit": "f60b3f5a43568d1be9031bd404913552c5ba2be2",
+    "builtAt": "2026-09-14T12:10:01Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": true
+  },
+  {
     "id": "custom-8bae486",
     "name": "ipah",
     "file": "bins/custom-8bae486.bin",
