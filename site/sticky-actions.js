@@ -1,13 +1,13 @@
 (()=>{
 'use strict';
-if(window.__vallianStickyActionsV20)return;window.__vallianStickyActionsV20=true;
+if(window.__vallianStickyActionsV21)return;window.__vallianStickyActionsV21=true;window.__vallianStickyActionsV20=true;
 const $=s=>document.querySelector(s);
 const path=location.pathname.replace(/\.html$/,'').replace(/\/$/,'')||'/';
 function addScript(id,src){if(document.getElementById(id)||[...document.scripts].some(s=>s.src.includes(src.split('?')[0])))return;const s=document.createElement('script');s.id=id;s.src=src;s.async=false;document.body.append(s)}
 function addStyle(id,href){if(document.getElementById(id)||[...document.styleSheets].some(s=>s.href?.includes(href.split('?')[0])))return;const l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href=href;document.head.append(l)}
 function loadShared(){addStyle('pixelUi','/pixel-ui.css?v=1');addStyle('assetsV2Css','/assets-v2.css?v=1');addScript('assetsV2Script','/assets-v2.js?v=1');addScript('vallianOtaRuntime','/ota-runtime.js?v=2')}
 function loadDeviceEnhancements(){
-  if(path!=='/device'||document.body?.dataset.deviceRuntime==='v20')return;
+  if(path!=='/device'||['v20','v21'].includes(document.body?.dataset.deviceRuntime))return;
   addStyle('deviceWiringV9Css','/device-wiring-v9.css?v=2');addStyle('deviceWiringV13Css','/device-wiring-v13.css?v=1');addStyle('deviceWiringV14Css','/device-wiring-v14.css?v=1');addStyle('deviceAssetsV2Css','/device-assets-v2.css?v=1');addStyle('devicePresetV2Css','/device-presets-v2.css?v=5');addStyle('deviceBuildGuideV3Css','/device-build-guide-v3.css?v=5');addStyle('deviceBreadboardZoomV1Css','/device-breadboard-zoom-v1.css?v=1');addScript('deviceWiringV10Script','/device-wiring-v10.js?v=4');addScript('wokwiAdapterScript','/wokwi-adapter.js?v=2');addScript('deviceWiringV13Script','/device-wiring-v13.js?v=1');addScript('deviceWiringV13PrecisionScript','/device-wiring-v13-precision.js?v=1');addScript('deviceWiringV14Script','/device-wiring-v14.js?v=2');addScript('deviceAssetsV2Script','/device-assets-v2.js?v=1');addScript('devicePresetV2Script','/device-presets-v2.js?v=5');addScript('deviceBuildGuideV3Script','/device-build-guide-v3.js?v=5');addScript('deviceBreadboardZoomV1Script','/device-breadboard-zoom-v1.js?v=1');addStyle('deviceSimV3Css','/device-sim-v3.css?v=1');addScript('deviceSimV3Script','/device-sim-v3.js?v=1')
 }
 function setViewportInset(){const vv=window.visualViewport;if(!vv){document.documentElement.style.setProperty('--browser-inset','0px');return}const inset=Math.max(0,Math.round(window.innerHeight-vv.height-vv.offsetTop));document.documentElement.style.setProperty('--browser-inset',Math.min(inset,120)+'px')}
