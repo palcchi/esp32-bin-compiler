@@ -1,0 +1,1 @@
+(()=>{'use strict';import('/device-anime-v22.js?v=1').catch(err=>console.error('[Device Anime] runtime load failed',err));})();
