@@ -1,12 +1,17 @@
-# Third-party visual assets
+# Third-party visual assets and references
 
-This project reuses selected open-source visual assets and component renderers. Original licenses and copyright notices remain with their respective authors.
+This project reuses selected open-source visual assets/component renderers and studies compatible open-source editor architecture. Original licenses and copyright notices remain with their respective authors.
 
 ## Wokwi Elements
 - Repository: `wokwi/wokwi-elements`
 - License: MIT
 - Copyright: Uri Shaked
 - Use in this project: electronic component Web Components, SVG/vector presentation, and physical `pinInfo` metadata where available.
+
+## OpenHW Studio Frontend
+- Repository: `OpenHW-Studio/OpenHW-studio-frontend`
+- License: MIT
+- Use in this project: architectural reference for keeping the circuit canvas state-driven, separating wiring utilities from UI controls, and avoiding multiple renderers owning the same workspace. Vallian's Device Composer renderer and project model remain implemented in this repository.
 
 ## Tabler Icons
 - Repository: `tabler/tabler-icons`
