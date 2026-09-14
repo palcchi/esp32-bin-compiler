@@ -45,7 +45,7 @@ const char __vallianOtaPage[] PROGMEM = R"VALLIANOTA(
 )VALLIANOTA";
 
 const char __vallianOtaDone[] PROGMEM = R"VALLIANOTADONE(
-<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f5f5f7"><style>*{box-sizing:border-box}body{margin:0;background:#f5f5f7;color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:18px}.c{max-width:520px;margin:15vh auto 0;padding:24px;border:1px solid rgba(60,60,67,.11);border-radius:24px;background:#fff;box-shadow:0 18px 50px rgba(20,20,24,.08)}i{display:block;width:12px;height:12px;border-radius:50%;background:#34c759;margin-bottom:16px}h2{margin:0 0 7px;font-size:28px;letter-spacing:-.04em}p{margin:0;color:#777;font-size:13px;line-height:1.5}</style><div class="c"><i></i><h2>Update complete</h2><p>Firmware installed. ESP32 is restarting now.</p></div>
+<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f5f5f7"><style>*{{box-sizing:border-box}}body{{margin:0;background:#f5f5f7;color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:18px}}.c{{max-width:520px;margin:15vh auto 0;padding:24px;border:1px solid rgba(60,60,67,.11);border-radius:24px;background:#fff;box-shadow:0 18px 50px rgba(20,20,24,.08)}}i{{display:block;width:12px;height:12px;border-radius:50%;background:#34c759;margin-bottom:16px}}h2{{margin:0 0 7px;font-size:28px;letter-spacing:-.04em}}p{{margin:0;color:#777;font-size:13px;line-height:1.5}}</style><div class="c"><i></i><h2>Update complete</h2><p>Firmware installed. ESP32 is restarting now.</p></div>
 )VALLIANOTADONE";
 
 void __vallianOtaTask(void* parameter) {{
