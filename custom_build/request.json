@@ -1,11 +1,11 @@
 {
-  "name": "Rapi",
+  "name": "Custom rapi",
   "code": "//Judul: Kendali Aktuator Digital Menggunakan ESP32 dengan LED, Buzzer, dan Relay 1 Channel\n//nama kolompok beserta anggota\n#define LED_PIN 2\n#define BUZZER_PIN 4\n#define RELAY_PIN 5\n\nvoid setup() {\n  pinMode(LED_PIN, OUTPUT);\n  pinMode(BUZZER_PIN, OUTPUT);\n  pinMode(RELAY_PIN, OUTPUT);\n}\n\nvoid loop() {\n  // Semua ON\n  digitalWrite(LED_PIN, HIGH);\n  digitalWrite(BUZZER_PIN, HIGH);\n  digitalWrite(RELAY_PIN, HIGH);\n\n  delay(2000);\n  // Semua OFF\n  digitalWrite(LED_PIN, LOW);\n  digitalWrite(BUZZER_PIN, LOW);\n  digitalWrite(RELAY_PIN, LOW);\n  delay(2000);\n\n}",
   "preserveOta": true,
   "ota": {
-    "ssid": "ESP32",
+    "ssid": "RAPI",
     "password": "12345678"
   },
   "libraries": [],
-  "createdAt": "2026-09-14T07:08:13.368Z"
+  "createdAt": "2026-09-14T07:23:38.861Z"
 }
