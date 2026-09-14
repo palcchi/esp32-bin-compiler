@@ -1,0 +1,19 @@
+/* Device Composer V20
+   Stable single-owner rendering. Interactive canvases must not be animated by
+   global page-motion rules or resized while async hardware vectors are loading. */
+.device-app{--device-live-min:260px}
+.device-app #breadboardCanvasV7{position:relative;min-height:var(--device-live-min);contain:layout paint;overflow:auto;-webkit-overflow-scrolling:touch;background:#eceef1}
+.device-app #breadboardCanvasV7[data-v13-loading="1"]{cursor:progress}
+.device-app #breadboardCanvasV7[data-v13-loading="1"]:empty:before{content:"Loading hardware…";position:absolute;inset:0;display:grid;place-items:center;color:#85858a;font-size:11px;font-weight:750;letter-spacing:.02em}
+.device-app #breadboardCanvasV7>svg{display:block;max-width:none;opacity:1!important;animation:none!important;transition:none!important}
+.device-app #breadboardCanvasV7 .v13-part,.device-app #breadboardCanvasV7 .wire-group-v9,.device-app #breadboardCanvasV7 .v13-vector{transition:none!important}
+.device-app #pinMapCanvas,.device-app #wiringList,.device-app #selectedComponents,.device-app #componentLibrary,.device-app #logicRules{contain:layout style}
+.device-app #selectedComponents [data-apple-motion],.device-app #componentLibrary [data-apple-motion],.device-app #logicRules [data-apple-motion],.device-app #pinMapCanvas [data-apple-motion],.device-app #wiringList [data-apple-motion]{opacity:1!important;transform:none!important;transition:none!important}
+.device-app .component-icon.hardware-thumb{width:42px;height:42px;min-width:42px;min-height:42px;display:grid;place-items:center;overflow:hidden;contain:strict}
+.device-app .hardware-thumb-vector,.device-app .hardware-thumb-fallback{width:100%;height:100%;display:grid;place-items:center;opacity:1!important;transition:none!important}
+.device-app .hardware-thumb-vector>svg{display:block;width:100%!important;height:100%!important;max-width:100%;max-height:100%}
+.device-app .wiring-hub-view{content-visibility:auto;contain-intrinsic-size:1px 520px}
+.device-app .wiring-hub-view.active{content-visibility:visible}
+.device-runtime-badge{display:inline-flex;align-items:center;gap:6px;font-size:9px;font-weight:800;color:#6f6f75}.device-runtime-badge:before{content:"";width:6px;height:6px;border-radius:50%;background:#34c759}
+@media(max-width:760px){.device-app{--device-live-min:220px}.device-app #breadboardCanvasV7{border-radius:16px}.device-app .component-icon.hardware-thumb{width:38px;height:38px;min-width:38px;min-height:38px}}
+@media(prefers-reduced-motion:reduce){.device-app *{scroll-behavior:auto!important}}
