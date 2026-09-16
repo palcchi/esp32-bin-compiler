@@ -1,107 +1,121 @@
 {
-  "name": "The Rare Occasions - Origami",
+  "name": "My Lyrics Firmware",
   "style": "brat",
   "size": 2,
-  "createdAt": "2026-09-09T03:45:41.806Z",
-  "estimatedFrames": 21,
+  "createdAt": "2026-09-16T16:14:54.865Z",
+  "estimatedFrames": 64,
   "scenes": [
     {
-      "text": "Take a look at me",
-      "duration": 2600,
+      "text": "fine",
+      "duration": 1000,
       "invert": false,
       "animation": "none",
       "order": 0
     },
     {
-      "text": "Crumpled up on the floor",
-      "duration": 3000,
+      "text": "just this once",
+      "duration": 2000,
       "invert": false,
-      "animation": "none",
+      "animation": "words",
       "order": 1
     },
     {
-      "text": "feeling lonely",
-      "duration": 3100,
-      "invert": true,
-      "animation": "words",
+      "text": "and",
+      "duration": 450,
+      "invert": false,
+      "animation": "none",
       "order": 2
     },
     {
-      "text": "Honestly",
-      "duration": 1500,
+      "text": "Jane!",
+      "duration": 1200,
       "invert": false,
-      "animation": "words",
+      "animation": "none",
       "order": 3
     },
     {
-      "text": "something is wrong with me",
-      "duration": 3500,
+      "text": "you're early",
+      "duration": 1800,
       "invert": false,
-      "animation": "none",
+      "animation": "words",
       "order": 4
     },
     {
-      "text": ".",
-      "duration": 400,
-      "invert": true,
+      "text": "Your life's work is dirtied by the",
+      "duration": 3800,
+      "invert": false,
       "animation": "words",
       "order": 5
     },
     {
-      "text": "..",
-      "duration": 400,
+      "text": "fools",
+      "duration": 1000,
       "invert": false,
-      "animation": "none",
+      "animation": "words",
       "order": 6
     },
     {
-      "text": "...",
-      "duration": 400,
-      "invert": true,
+      "text": "Who adore you",
+      "duration": 2300,
+      "invert": false,
       "animation": "words",
       "order": 7
     },
     {
-      "text": "I've been freaking out",
-      "duration": 2300,
+      "text": "Only to find",
+      "duration": 1100,
       "invert": false,
-      "animation": "none",
+      "animation": "words",
       "order": 8
     },
     {
-      "text": "Folding myself into",
-      "duration": 3300,
+      "text": "only to find you out",
+      "duration": 3000,
       "invert": false,
-      "animation": "none",
+      "animation": "words",
       "order": 9
     },
     {
-      "text": "origami",
-      "duration": 2500,
-      "invert": true,
-      "animation": "popwords",
+      "text": "They saw you",
+      "duration": 2200,
+      "invert": false,
+      "animation": "words",
       "order": 10
     },
     {
-      "text": "Terrified",
-      "duration": 2000,
+      "text": "dressing in the backroom",
+      "duration": 2200,
       "invert": false,
-      "animation": "none",
+      "animation": "words",
       "order": 11
     },
     {
-      "text": "of what they",
-      "duration": 1200,
+      "text": "Now they'll pay",
+      "duration": 2000,
       "invert": false,
-      "animation": "none",
+      "animation": "words",
       "order": 12
     },
     {
-      "text": "would think of me",
-      "duration": 3300,
+      "text": "what they owe you",
+      "duration": 2070,
       "invert": false,
-      "animation": "none",
+      "animation": "words",
       "order": 13
+    },
+    {
+      "text": "It's only small change",
+      "duration": 1930,
+      "invert": false,
+      "animation": "words",
+      "order": 14
+    },
+    {
+      "text": "Red on the green green grass",
+      "duration": 2500,
+      "invert": false,
+      "animation": "words",
+      "order": 15
     }
   ]
 }
