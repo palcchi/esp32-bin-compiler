@@ -1,5 +1,17 @@
 [
   {
+    "id": "lyrics-f0a1439",
+    "name": "My Lyrics Firmware",
+    "file": "bins/lyrics-f0a1439.bin",
+    "size": 1015072,
+    "commit": "f0a143912775bf0a9122dbb873e965648b2d5bec",
+    "builtAt": "2026-09-16T16:15:42Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "firmware/firmware.ino",
+    "ota": true
+  },
+  {
     "id": "custom-f60b3f5",
     "name": "kuis",
     "file": "bins/custom-f60b3f5.bin",
