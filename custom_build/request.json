@@ -1,11 +1,11 @@
 {
-  "name": "kuis",
-  "code": "#define LED1 2\n#define LED2 4\n#define BUZZER 16\nvoid setup() {\npinMode(LED1, OUTPUT);\npinMode(LED2, OUTPUT);\npinMode(BUZZER, OUTPUT);\n}\nvoid loop() {\n// LED 1 menyala + buzzer bunyi\ndigitalWrite(LED1, HIGH);\ndigitalWrite(LED2, LOW);\ntone(BUZZER, 1000); // frekuensi buzzer 1000 Hz\ndelay(1000);\nnoTone(BUZZER);\ndigitalWrite(LED1, LOW);\ndelay(200);\n// LED 2 menyala + buzzer bunyi\ndigitalWrite(LED2, HIGH);\ndigitalWrite(LED1, LOW);\ntone(BUZZER, 1500); // frekuensi berbeda\ndelay(1000);\nnoTone(BUZZER);\ndigitalWrite(LED2, LOW);\ndelay(200);\n}",
+  "name": "suhu",
+  "code": "#include <DHT.h>\n\n#define DHTPIN 4\n#define DHTTYPE DHT22\n\n#define LED_NORMAL 18\n#define LED_WARNING 19\n\nDHT dht(DHTPIN, DHTTYPE);\n\nvoid setup() {\n  Serial.begin(115200);\n\n  dht.begin();\n\n  pinMode(LED_NORMAL, OUTPUT);\n  pinMode(LED_WARNING, OUTPUT);\n}\n\nvoid loop() {\n  float suhu = dht.readTemperature();\n  float hum = dht.readHumidity();\n\n  // Cek apakah sensor error\n  if (isnan(suhu) || isnan(hum)) {\n    Serial.println(\"Sensor Error\");\n    return;\n  }\n\n  // Validasi data sensor\n  if (suhu >= 0 && suhu <= 50 && hum >= 0 && hum <= 100) {\n\n    Serial.print(\"Suhu : \");\n    Serial.print(suhu);\n    Serial.println(\" C\");\n\n    Serial.print(\"Kelembapan : \");\n    Serial.print(hum);\n    Serial.println(\" %\");\n\n    Serial.println(\"Data Valid\");\n\n    // Indikator LED\n    if (suhu <= 30) {\n      digitalWrite(LED_NORMAL, HIGH);\n      digitalWrite(LED_WARNING, LOW);\n    } \n    else {\n      digitalWrite(LED_NORMAL, LOW);\n      digitalWrite(LED_WARNING, HIGH);\n    }\n\n  } \n  else {\n    Serial.println(\"Data Tidak Valid\");\n  }\n\n  delay(2000);\n}",
   "preserveOta": true,
   "ota": {
     "ssid": "VALLIAN-ESP32",
     "password": "12345678"
   },
   "libraries": [],
-  "createdAt": "2026-09-14T12:08:16.005Z"
+  "createdAt": "2026-09-22T15:11:16.990Z"
 }
