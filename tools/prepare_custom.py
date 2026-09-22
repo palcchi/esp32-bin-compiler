@@ -99,5 +99,24 @@ void loop(){{
 Path('.build/custom').mkdir(parents=True, exist_ok=True)
 Path('.build/custom/custom.ino').write_text(code)
 Path('.build/name.txt').write_text(str(req.get('name', 'Custom ESP32 Firmware'))[:60])
-Path('.build/libs.txt').write_text('\n'.join(req.get('libraries', [])[:12]))
+# Resolve common Arduino libraries directly from #include statements.
+# The Libraries field stays optional; pasted Arduino IDE sketches should build
+# without requiring users to repeat library names in a separate form field.
+libraries = [str(x).strip() for x in req.get('libraries', [])[:12] if str(x).strip()]
+include_names = set(re.findall(r'#include\s*[<"]([^>"]+)[>"]', code))
+
+auto_libraries = {
+    'DHT.h': ['DHT sensor library', 'Adafruit Unified Sensor'],
+    'DHT_U.h': ['DHT sensor library', 'Adafruit Unified Sensor'],
+    'Adafruit_Sensor.h': ['Adafruit Unified Sensor'],
+    'Adafruit_GFX.h': ['Adafruit GFX Library'],
+    'Adafruit_SSD1306.h': ['Adafruit SSD1306'],
+}
+
+for header in include_names:
+    for library in auto_libraries.get(header, []):
+        if library not in libraries:
+            libraries.append(library)
+
+Path('.build/libs.txt').write_text('\n'.join(libraries[:12]))
 Path('.build/ota.txt').write_text('true' if preserve_ota else 'false')
