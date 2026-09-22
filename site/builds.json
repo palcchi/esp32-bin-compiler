@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-93d2648",
+    "name": "suhuu",
+    "file": "bins/custom-93d2648.bin",
+    "size": 932928,
+    "commit": "93d2648c35251ea1dbed9ca93ef75f248d1f1292",
+    "builtAt": "2026-09-22T15:22:00Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": true
+  },
+  {
     "id": "custom-11f2580",
     "name": "suhu",
     "file": "bins/custom-11f2580.bin",
