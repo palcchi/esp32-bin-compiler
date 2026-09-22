@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-f3e7125",
+    "name": "suhu",
+    "file": null,
+    "size": 0,
+    "commit": "f3e7125c08bcf95d6b4b855a8286a17d0e7ac21f",
+    "builtAt": "2026-09-22T15:12:22Z",
+    "status": "failed",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": true
+  },
+  {
     "id": "lyrics-f0a1439",
     "name": "My Lyrics Firmware",
     "file": "bins/lyrics-f0a1439.bin",
