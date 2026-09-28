@@ -1,5 +1,17 @@
 [
   {
+    "id": "custom-c6e772c",
+    "name": "alarm",
+    "file": "bins/custom-c6e772c.bin",
+    "size": 940832,
+    "commit": "c6e772cc007865226b8450c30e6eee91460c5631",
+    "builtAt": "2026-09-28T12:57:08Z",
+    "status": "ready",
+    "board": "ESP32 DOIT DevKit V1",
+    "source": "Custom Code",
+    "ota": true
+  },
+  {
     "id": "custom-93d2648",
     "name": "suhuu",
     "file": "bins/custom-93d2648.bin",
