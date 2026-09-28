@@ -1,11 +1,11 @@
 {
-  "name": "suhuu",
-  "code": "#include <DHT.h>\n\n#define DHTPIN 4\n#define DHTTYPE DHT22\n\n#define LED_NORMAL 18\n#define LED_WARNING 19\n\nDHT dht(DHTPIN, DHTTYPE);\n\nvoid setup() {\n  Serial.begin(115200);\n\n  dht.begin();\n\n  pinMode(LED_NORMAL, OUTPUT);\n  pinMode(LED_WARNING, OUTPUT);\n}\n\nvoid loop() {\n  float suhu = dht.readTemperature();\n  float hum = dht.readHumidity();\n\n  if (isnan(suhu) || isnan(hum)) {\n    Serial.println(\"Sensor Error\");\n    delay(2000);\n    return;\n  }\n\n  if (suhu >= 0 && suhu <= 50 && hum >= 0 && hum <= 100) {\n    Serial.print(\"Suhu : \");\n    Serial.print(suhu);\n    Serial.println(\" C\");\n\n    Serial.print(\"Kelembapan : \");\n    Serial.print(hum);\n    Serial.println(\" %\");\n\n    Serial.println(\"Data Valid\");\n\n    if (suhu <= 30) {\n      digitalWrite(LED_NORMAL, HIGH);\n      digitalWrite(LED_WARNING, LOW);\n    } else {\n      digitalWrite(LED_NORMAL, LOW);\n      digitalWrite(LED_WARNING, HIGH);\n    }\n\n  } else {\n    Serial.println(\"Data Tidak Valid\");\n  }\n\n  delay(2000);\n}",
+  "name": "alarm",
+  "code": "#define PIR_PIN 27\n#define LED_HIJAU 25\n#define LED_KUNING 26\n#define LED_MERAH 33\n#define BUZZER 32\n\nunsigned long waktuDeteksi = 0;\nbool gerakan = false;\n\nvoid setup() {\n  Serial.begin(115200);\n\n  pinMode(PIR_PIN, INPUT);\n  pinMode(LED_HIJAU, OUTPUT);\n  pinMode(LED_KUNING, OUTPUT);\n  pinMode(LED_MERAH, OUTPUT);\n  pinMode(BUZZER, OUTPUT);\n\n  digitalWrite(LED_HIJAU, HIGH);\n}\n\nvoid loop() {\n  int nilaiPIR = digitalRead(PIR_PIN);\n\n  if (nilaiPIR == HIGH) {\n\n    if (!gerakan) {\n      waktuDeteksi = millis();\n      gerakan = true;\n      Serial.println(\"Gerakan Terdeteksi\");\n    }\n\n    digitalWrite(LED_HIJAU, LOW);\n    digitalWrite(LED_KUNING, HIGH);\n\n    unsigned long durasi = millis() - waktuDeteksi;\n\n    if (durasi > 5000) {\n      digitalWrite(LED_MERAH, HIGH);\n      tone(BUZZER, 1000);\n      Serial.println(\"ALARM AKTIF\");\n    }\n\n  } else {\n\n    gerakan = false;\n\n    digitalWrite(LED_HIJAU, HIGH);\n    digitalWrite(LED_KUNING, LOW);\n    digitalWrite(LED_MERAH, LOW);\n\n    noTone(BUZZER);\n  }\n\n  delay(100);\n}",
   "preserveOta": true,
   "ota": {
     "ssid": "VALLIAN-ESP32",
     "password": "12345678"
   },
   "libraries": [],
-  "createdAt": "2026-09-22T15:19:10.375Z"
+  "createdAt": "2026-09-28T12:55:12.546Z"
 }
